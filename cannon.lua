@@ -62,6 +62,7 @@ minetest.register_node("spacecannon:cannon", {
 	groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 	drop = "spacecannon:cannon",
 	sounds = default.node_sound_glass_defaults(),
+	paramtype2 = "facedir",
 
 	mesecons = {effector = {
 		action_on = function (pos, node)
