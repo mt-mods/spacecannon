@@ -1,11 +1,11 @@
 local has_technic_mod = minetest.get_modpath("technic")
 
 
-minetest.register_entity("spacecannon:energyball", {
+minetest.register_entity("spacecannon:energycube", {
 	initial_properties = {
 		visual = "cube",
 		visual_size = {x=0.25, y=0.25},
-		textures = {"spark.png"},
+		textures = {"energycube.png","energycube.png","energycube.png","energycube.png","energycube.png","energycube.png"},
 		collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
 		physical = false,
 		timer=0
@@ -58,15 +58,20 @@ minetest.register_entity("spacecannon:energyball", {
 
 minetest.register_node("spacecannon:cannon", {
 	description = "Spacecannon",
-	tiles = {"cannon.png","cannon_front.png","cannon.png","cannon.png","cannon.png","cannon.png"},
+	tiles = {"cannon.png","cannon.png","cannon.png","cannon_front.png","cannon.png","cannon.png"},
 	groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 	drop = "spacecannon:cannon",
 	sounds = default.node_sound_glass_defaults(),
 
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			local obj = minetest.add_entity({x=pos.x, y=pos.y, z=pos.z+1}, "spacecannon:energyball")
-			obj:setvelocity({x=0, y=0, z=1})
+			local dir = minetest.facedir_to_dir(node.param2 % 4)
+			print(dir.x)
+			print(dir.y)
+			print(dir.z)
+
+			local obj = minetest.add_entity({x=pos.x+1, y=pos.y, z=pos.z}, "spacecannon:energycube")
+			obj:setvelocity({x=3, y=0, z=0})
 			-- obj:setacceleration({x=dir.x*-3, y=-settings.gravity, z=dir.z*-3})
 		end
 	}},
