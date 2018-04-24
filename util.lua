@@ -78,6 +78,7 @@ spacecannon.destroy = function(pos,range)
 			minsize = radius * 3,
 			maxsize = radius * 5,
 			texture = "spacecannon_spark.png",
+			glow = 5
 	})
 
 	minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = math.min(radius * 20, 128)})

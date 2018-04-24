@@ -10,11 +10,35 @@ local register_spacecannon = function(color, range, timeout, speed)
 			visual_size = {x=0.25, y=0.25},
 			textures = {entity_texture,entity_texture,entity_texture,entity_texture,entity_texture,entity_texture},
 			collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
-			physical = false,
+			physical = false
 		},
+		timer = 0,
 
 		on_step = function(self, dtime)
+			self.timer = self.timer + dtime
 			local pos = self.object:getpos()
+
+			if self.timer > 0.5 then
+				-- add sparks along the way
+				minetest.add_particlespawner({
+						amount = 5,
+						time = 0.5,
+						minpos = pos,
+						maxpos = pos,
+						minvel = {x = -2, y = -2, z = -2},
+						maxvel = {x = 2, y = 2, z = 2},
+						minacc = {x = -3, y = -3, z = -3},
+						maxacc = {x = 3, y = 3, z = 3},
+						minexptime = 1,
+						maxexptime = 2.5,
+						minsize = 0.5,
+						maxsize = 0.75,
+						texture = "spacecannon_spark.png",
+						glow = 5
+				})
+				self.timer = 0
+			end
+
 			local node = minetest.get_node(pos)
 
 			if node.name == "air" then
