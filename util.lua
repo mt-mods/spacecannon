@@ -9,7 +9,31 @@ spacecannon.update_formspec = function(meta)
 		"list[current_player;main;0,5;8,4;]")
 end
 
-spacecannon.fire = function(pos, color, speed)
+spacecannon.fire = function(pos, color, speed, range)
+	-- check fuel/power
+	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+
+	if meta:get_int("powerstorage") < spacecannon.config.powerstorage * range then
+
+		-- check inventory
+		local inv = meta:get_inventory()
+		local power_item = spacecannon.config.power_item
+		local power_item_count = spacecannon.config.power_item_count * range
+
+		if not inv:contains_item("main", {name=power_item, count=power_item_count}) then
+			minetest.chat_send_player(owner, "Not enough fuel to fire cannon, expected " .. power_item_count .. " " .. power_item)
+			return
+		end
+
+		-- use up items
+		inv:remove_item("main", {name=power_item, count=power_item_count})
+	else
+		-- use power
+		meta:set_int("powerstorage", 0)
+	end
+
+
 	local node = minetest.get_node(pos)
 	local dir = spacecannon.facedir_to_down_dir(node.param2)
 	local obj = minetest.add_entity({x=pos.x+dir.x, y=pos.y+dir.y, z=pos.z+dir.z}, "spacecannon:energycube_" .. color)

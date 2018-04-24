@@ -61,7 +61,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 
 		mesecons = {effector = {
 			action_on = function (pos, node)
-				spacecannon.fire(pos, color, speed)
+				spacecannon.fire(pos, color, speed, range)
 			end
 		}},
 
@@ -103,7 +103,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 
 			meta:set_string("infotext", "Power: " .. eu_input .. "/" .. demand .. " Store: " .. store)
 
-			if store < spacecannon.config.powerstorage then
+			if store < spacecannon.config.powerstorage * range then
 				-- charge
 				meta:set_int("HV_EU_demand", spacecannon.config.powerrequirement)
 				store = store + eu_input
@@ -118,7 +118,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 			local meta = minetest.get_meta(pos);
 
 			if fields.fire then
-				spacecannon.fire(pos, color, speed)
+				spacecannon.fire(pos, color, speed, range)
 			end
 		end
 
