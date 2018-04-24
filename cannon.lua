@@ -44,15 +44,12 @@ local register_spacecannon = function(color, range, timeout, speed)
 			if node.name == "air" then
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 3)
 				for k, obj in pairs(objs) do
-				if obj:get_luaentity() ~= nil then
-					if obj:get_luaentity().name ~= self.name and obj:get_luaentity().name ~= "__builtin:item" then --something other found
-						local mob = obj
-						-- self.on_mob_hit(self,pos,mob)
-						end
-					elseif obj:is_player() then --player found
-					local player = obj
-						-- self.on_player_hit(self,pos,player)
-					end		
+				if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
+					obj:punch(self.object, 1.0, {
+							full_punch_interval=1.0,
+							damage_groups={fleshy=range*2},
+						}, nil)
+					end
 				end
 			elseif node.name ~= "air" then
 				-- collision
