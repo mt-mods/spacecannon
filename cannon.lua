@@ -30,7 +30,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 						-- self.on_player_hit(self,pos,player)
 					end		
 				end
-			elseif node.name ~= "air"  then
+			elseif node.name ~= "air" then
 				-- collision
 				spacecannon.destroy(pos, range)
 				self.object:remove()
@@ -61,9 +61,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 
 		mesecons = {effector = {
 			action_on = function (pos, node)
-				local dir = spacecannon.facedir_to_down_dir(node.param2)
-				local obj = minetest.add_entity({x=pos.x+dir.x, y=pos.y+dir.y, z=pos.z+dir.z}, "spacecannon:energycube_" .. color)
-				obj:setvelocity({x=dir.x*speed, y=dir.y*speed, z=dir.z*speed})
+				spacecannon.fire(pos, color, speed)
 			end
 		}},
 
@@ -79,11 +77,23 @@ local register_spacecannon = function(color, range, timeout, speed)
 			local meta = minetest.get_meta(pos)
 			meta:set_int("powerstorage", 0)
 
+			local inv = meta:get_inventory()
+			inv:set_size("main", 8)
+
 			if has_technic_mod then
 				meta:set_int("HV_EU_input", 0)
 				meta:set_int("HV_EU_demand", 0)
 			end
+
+			spacecannon.update_formspec(meta)
 		end,
+
+		can_dig = function(pos,player)
+			local meta = minetest.get_meta(pos);
+			local inv = meta:get_inventory()
+			return inv:is_empty("main")
+		end,
+
 
 		technic_run = function(pos, node)
 			local meta = minetest.get_meta(pos)
@@ -102,7 +112,16 @@ local register_spacecannon = function(color, range, timeout, speed)
 				-- charged
 				meta:set_int("HV_EU_demand", 0)
 			end
+		end,
+
+		on_receive_fields = function(pos, formname, fields, sender)
+			local meta = minetest.get_meta(pos);
+
+			if fields.fire then
+				spacecannon.fire(pos, color, speed)
+			end
 		end
+
 	})
 
 	if has_technic_mod then

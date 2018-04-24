@@ -1,5 +1,21 @@
 
 
+spacecannon.update_formspec = function(meta)
+	meta:set_string("formspec", "size[8,10;]" ..
+		"button_exit[0,2;8,1;fire;Fire]" ..
+
+		"list[context;main;0,3;8,1;]" ..
+
+		"list[current_player;main;0,5;8,4;]")
+end
+
+spacecannon.fire = function(pos, color, speed)
+	local node = minetest.get_node(pos)
+	local dir = spacecannon.facedir_to_down_dir(node.param2)
+	local obj = minetest.add_entity({x=pos.x+dir.x, y=pos.y+dir.y, z=pos.z+dir.z}, "spacecannon:energycube_" .. color)
+	obj:setvelocity({x=dir.x*speed, y=dir.y*speed, z=dir.z*speed})
+end
+
 -- destroy stuff in range
 spacecannon.destroy = function(pos,range)
 	for x=-range,range do
