@@ -1,5 +1,25 @@
 local has_technic_mod = minetest.get_modpath("technic")
 
+local destroy = function(pos,range)
+	for x=-range,range do
+		for y=-range,range do
+			for z=-range,range do
+				if x*x+y*y+z*z <= range * range + range then
+					local np={x=pos.x+x,y=pos.y+y,z=pos.z+z}
+
+					if minetest.is_protected(np, "") then
+						return -- fail fast
+					end
+
+					local n = minetest.env:get_node(np)
+					if n.name ~= "air" then
+						minetest.env:remove_node(np)
+					end
+				end
+			end
+		end
+	end
+end
 
 minetest.register_entity("spacecannon:energycube", {
 	initial_properties = {
@@ -8,35 +28,51 @@ minetest.register_entity("spacecannon:energycube", {
 		textures = {"energycube.png","energycube.png","energycube.png","energycube.png","energycube.png","energycube.png"},
 		collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
 		physical = false,
-		timer=0
 	},
 
 	on_step = function(self, dtime)
-		if self.timer == nil then
-			return --XXX
-		end
-		self.timer=self.timer+dtime
-		if self.timer >= 0.3 then
-			local pos = self.object:getpos()
-			local node = minetest.get_node(pos)
+		local pos = self.object:getpos()
+		local node = minetest.get_node(pos)
 
-			if node.name == "air" then
-				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 3)
-				for k, obj in pairs(objs) do
-				if obj:get_luaentity() ~= nil then
-					if obj:get_luaentity().name ~= self.name and obj:get_luaentity().name ~= "__builtin:item" then --something other found
-						local mob = obj
-						-- self.on_mob_hit(self,pos,mob)
-						end
-					elseif obj:is_player() then --player found
-					local player = obj
-						-- self.on_player_hit(self,pos,player)
-					end		
-				end
-			elseif node.name ~= "air"  then
-
+		if node.name == "air" then
+			local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 3)
+			for k, obj in pairs(objs) do
+			if obj:get_luaentity() ~= nil then
+				if obj:get_luaentity().name ~= self.name and obj:get_luaentity().name ~= "__builtin:item" then --something other found
+					local mob = obj
+					-- self.on_mob_hit(self,pos,mob)
+					end
+				elseif obj:is_player() then --player found
+				local player = obj
+					-- self.on_player_hit(self,pos,player)
+				end		
 			end
-		end	
+		elseif node.name ~= "air"  then
+			-- collision
+			destroy(pos, 1)
+			self.object:remove()
+			local radius = 1
+
+			-- https://github.com/minetest/minetest_game/blob/master/mods/tnt/init.lua
+			minetest.add_particlespawner({
+					amount = 64,
+					time = 0.5,
+					minpos = vector.subtract(pos, radius / 2),
+					maxpos = vector.add(pos, radius / 2),
+					minvel = {x = -10, y = -10, z = -10},
+					maxvel = {x = 10, y = 10, z = 10},
+					minacc = vector.new(),
+					maxacc = vector.new(),
+					minexptime = 1,
+					maxexptime = 2.5,
+					minsize = radius * 3,
+					maxsize = radius * 5,
+					texture = "tnt_smoke.png",
+			})
+
+			minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = math.min(radius * 20, 128)})
+
+		end
 	end,
 
 	on_activate = function(self, staticdata)
@@ -54,11 +90,20 @@ minetest.register_entity("spacecannon:energycube", {
 	end,
 })
 
-
+local facedir_to_down_dir = function(facing)
+	return (
+		{[0]={x=0, y=-1, z=0},
+		{x=0, y=0, z=-1},
+		{x=0, y=0, z=1},
+		{x=-1, y=0, z=0},
+		{x=1, y=0, z=0},
+		{x=0, y=1, z=0}})[math.floor(facing/4)]
+end
 
 minetest.register_node("spacecannon:cannon", {
 	description = "Spacecannon",
-	tiles = {"cannon.png","cannon.png","cannon.png","cannon_front.png","cannon.png","cannon.png"},
+	-- top, bottom
+	tiles = {"cannon.png","cannon_front.png","cannon.png","cannon.png","cannon.png","cannon.png"},
 	groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 	drop = "spacecannon:cannon",
 	sounds = default.node_sound_glass_defaults(),
@@ -66,14 +111,11 @@ minetest.register_node("spacecannon:cannon", {
 
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			local dir = minetest.facedir_to_dir(node.param2 % 4)
-			print(dir.x)
-			print(dir.y)
-			print(dir.z)
+			local dir = facedir_to_down_dir(node.param2)
+			local obj = minetest.add_entity({x=pos.x+dir.x, y=pos.y+dir.y, z=pos.z+dir.z}, "spacecannon:energycube")
+			local speed = 3
 
-			local obj = minetest.add_entity({x=pos.x+1, y=pos.y, z=pos.z}, "spacecannon:energycube")
-			obj:setvelocity({x=3, y=0, z=0})
-			-- obj:setacceleration({x=dir.x*-3, y=-settings.gravity, z=dir.z*-3})
+			obj:setvelocity({x=dir.x*speed, y=dir.y*speed, z=dir.z*speed})
 		end
 	}},
 
