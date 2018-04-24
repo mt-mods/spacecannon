@@ -25,7 +25,7 @@ minetest.register_entity("spacecannon:energycube", {
 	initial_properties = {
 		visual = "cube",
 		visual_size = {x=0.25, y=0.25},
-		textures = {"energycube.png","energycube.png","energycube.png","energycube.png","energycube.png","energycube.png"},
+		textures = {"energycube_red.png","energycube_red.png","energycube_red.png","energycube_red.png","energycube_red.png","energycube_red.png"},
 		collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
 		physical = false,
 	},
@@ -67,7 +67,7 @@ minetest.register_entity("spacecannon:energycube", {
 					maxexptime = 2.5,
 					minsize = radius * 3,
 					maxsize = radius * 5,
-					texture = "tnt_smoke.png",
+					texture = "spacecannon_spark.png",
 			})
 
 			minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = math.min(radius * 20, 128)})
@@ -103,7 +103,7 @@ end
 minetest.register_node("spacecannon:cannon", {
 	description = "Spacecannon",
 	-- top, bottom
-	tiles = {"cannon.png","cannon_front.png","cannon.png","cannon.png","cannon.png","cannon.png"},
+	tiles = {"cannon_blank.png","cannon_front_red.png","cannon_blank.png","cannon_blank.png","cannon_blank.png","cannon_blank.png"},
 	groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 	drop = "spacecannon:cannon",
 	sounds = default.node_sound_glass_defaults(),
