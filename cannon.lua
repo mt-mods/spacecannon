@@ -1,10 +1,10 @@
 local has_technic_mod = minetest.get_modpath("technic")
 
-local register_spacecannon = function(color, range, timeout, speed)
+local register_spacecannon = function(def)
 
-	local entity_texture = "energycube_" .. color .. ".png"
+	local entity_texture = "energycube_" .. def.color .. ".png"
 
-	minetest.register_entity("spacecannon:energycube_" .. color, {
+	minetest.register_entity("spacecannon:energycube_" .. def.color, {
 		initial_properties = {
 			visual = "cube",
 			visual_size = {x=0.25, y=0.25},
@@ -13,6 +13,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 			physical = false
 		},
 		timer = 0,
+		static_save = false,
 
 		on_step = function(self, dtime)
 			self.timer = self.timer + dtime
@@ -47,20 +48,20 @@ local register_spacecannon = function(color, range, timeout, speed)
 				if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
 					obj:punch(self.object, 1.0, {
 							full_punch_interval=1.0,
-							damage_groups={fleshy=range*2},
+							damage_groups={fleshy=def.range*2},
 						}, nil)
 					end
 				end
 			elseif node.name ~= "air" then
 				-- collision
-				spacecannon.destroy(pos, range)
+				spacecannon.destroy(pos, def.range)
 				self.object:remove()
 
 			end
 		end,
 
 		on_activate = function(self, staticdata)
-				minetest.after(timeout, 
+				minetest.after(def.timeout, 
 					function(self) 
 						self.object:remove()
 					end,
@@ -71,18 +72,28 @@ local register_spacecannon = function(color, range, timeout, speed)
 
 
 
-	minetest.register_node("spacecannon:cannon_" .. color, {
-		description = "Spacecannon (" .. color .. ")",
+	minetest.register_node("spacecannon:cannon_" .. def.color, {
+		description = "Spacecannon (" .. def.desc .. ")",
 		-- top, bottom
-		tiles = {"cannon_blank.png","cannon_front_" .. color .. ".png","cannon_blank.png","cannon_blank.png","cannon_blank.png","cannon_blank.png"},
+		tiles = {
+			"cannon_blank.png",
+			"cannon_front_" .. def.color .. ".png",
+			"cannon_blank.png",
+			"cannon_blank.png",
+			"cannon_blank.png",
+			"cannon_blank.png"
+		},
+		inventory_image = minetest.inventorycube("cannon_front_" .. def.color .. ".png", "cannon_blank.png", "cannon_blank.png"),
+
 		groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
-		drop = "spacecannon:cannon_" .. color,
+		drop = "spacecannon:cannon_" .. def.color,
 		sounds = default.node_sound_glass_defaults(),
 		paramtype2 = "facedir",
+		legacy_facedir_simple = true,
 
 		mesecons = {effector = {
 			action_on = function (pos, node)
-				spacecannon.fire(pos, color, speed, range)
+				spacecannon.fire(pos, def.color, def.speed, def.range)
 			end
 		}},
 
@@ -124,7 +135,7 @@ local register_spacecannon = function(color, range, timeout, speed)
 
 			meta:set_string("infotext", "Power: " .. eu_input .. "/" .. demand .. " Store: " .. store)
 
-			if store < spacecannon.config.powerstorage * range then
+			if store < spacecannon.config.powerstorage * def.range then
 				-- charge
 				meta:set_int("HV_EU_demand", spacecannon.config.powerrequirement)
 				store = store + eu_input
@@ -139,34 +150,56 @@ local register_spacecannon = function(color, range, timeout, speed)
 			local meta = minetest.get_meta(pos);
 
 			if fields.fire then
-				spacecannon.fire(pos, color, speed, range)
+				spacecannon.fire(pos, def.color, def.speed, def.range)
 			end
 		end
 
 	})
 
 	if has_technic_mod then
-		technic.register_machine("HV", "spacecannon:cannon_" .. color, technic.receiver)
+		technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
 	end
 
-	--[[
 	minetest.register_craft({
-		output = 'spacecannon:cannon_' .. color,
+		output = 'spacecannon:cannon_' .. def.color,
 		recipe = {
-			{'', 'default:tnt', ''},
-			{'default:diamond', 'default:mese_block', 'default:diamond'},
-			{'', 'default:tnt', ''}
+			{'', 'default:steelblock', ''},
+			{ def.ingredient, def.ingredient, def.ingredient},
+			{'', 'default:steelblock', ''}
 		}
 	})
-	--]]
 
 
 
 end
 
-register_spacecannon("green", 1, 8, 10)
-register_spacecannon("yellow", 3, 8, 5)
-register_spacecannon("red", 5, 15, 3)
+register_spacecannon({
+	color = "green",
+	range = 1,
+	timeout = 8,
+	speed = 10,
+	desc = "fast,low damage",
+	ingredient = "default:mese_block"
+})
+
+register_spacecannon({
+	color = "yellow",
+	range = 3,
+	timeout = 8,
+	speed = 5,
+	desc = "medium speed, medium damage",
+	ingredient = "spacecannon:cannon_green"
+})
+
+register_spacecannon({
+	color = "red",
+	range = 5,
+	timeout = 15,
+	speed = 3,
+	desc = "slow, heavy damage",
+	ingredient = "spacecannon:cannon_yellow"
+})
+
 
 
 

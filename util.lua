@@ -41,6 +41,7 @@ spacecannon.fire = function(pos, color, speed, range)
 end
 
 -- destroy stuff in range
+-- TODO: resilient material list
 spacecannon.destroy = function(pos,range)
 	for x=-range,range do
 		for y=-range,range do
@@ -52,6 +53,7 @@ spacecannon.destroy = function(pos,range)
 						return -- fail fast
 					end
 
+					--TODO: replace env* stuff
 					local n = minetest.env:get_node(np)
 					if n.name ~= "air" then
 						minetest.env:remove_node(np)
