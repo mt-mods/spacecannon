@@ -1,12 +1,8 @@
 
 
 spacecannon.update_formspec = function(meta)
-	meta:set_string("formspec", "size[8,10;]" ..
-		"button_exit[0,2;8,1;fire;Fire]" ..
-
-		"list[context;main;0,3;8,1;]" ..
-
-		"list[current_player;main;0,5;8,4;]")
+	meta:set_string("formspec", "size[8,2;]" ..
+		"button_exit[0,2;8,1;fire;Fire]")
 end
 
 spacecannon.fire = function(pos, color, speed, range)
@@ -15,19 +11,9 @@ spacecannon.fire = function(pos, color, speed, range)
 	local owner = meta:get_string("owner")
 
 	if meta:get_int("powerstorage") < spacecannon.config.powerstorage * range then
+		-- not enough power
+		return
 
-		-- check inventory
-		local inv = meta:get_inventory()
-		local power_item = spacecannon.config.power_item
-		local power_item_count = spacecannon.config.power_item_count * range
-
-		if not inv:contains_item("main", {name=power_item, count=power_item_count}) then
-			minetest.chat_send_player(owner, "Not enough fuel to fire cannon, expected " .. power_item_count .. " " .. power_item)
-			return
-		end
-
-		-- use up items
-		inv:remove_item("main", {name=power_item, count=power_item_count})
 	else
 		-- use power
 		meta:set_int("powerstorage", 0)
@@ -53,10 +39,17 @@ spacecannon.destroy = function(pos,range)
 						return -- fail fast
 					end
 
-					--TODO: replace env* stuff
-					local n = minetest.env:get_node(np)
-					if n.name ~= "air" then
-						minetest.env:remove_node(np)
+					local n = minetest.get_node_or_nil(np)
+
+					if n and n.name ~= "air" then
+						minetest.set_node(np, {name="air"})
+						local itemstacks = minetest.get_node_drops(n.name)
+						for _, itemname in ipairs(itemstacks) do
+							if math.random(5) == 5 then
+								-- chance drop
+								minetest.add_item(np, itemname)
+							end
+						end
 					end
 				end
 			end
@@ -98,3 +91,5 @@ spacecannon.facedir_to_down_dir = function(facing)
 		{x=1, y=0, z=0},
 		{x=0, y=1, z=0}})[math.floor(facing/4)]
 end
+
+

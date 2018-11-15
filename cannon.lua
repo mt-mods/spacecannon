@@ -1,4 +1,3 @@
-local has_technic_mod = minetest.get_modpath("technic")
 
 local register_spacecannon = function(def)
 
@@ -42,17 +41,25 @@ local register_spacecannon = function(def)
 
 			local node = minetest.get_node(pos)
 
-			if node.name == "air" then
+			if node.name == "air" or node.name == "vacuum:vacuum" then
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 3)
+				local collided = false
 				for k, obj in pairs(objs) do
-				if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
-					obj:punch(self.object, 1.0, {
-							full_punch_interval=1.0,
-							damage_groups={fleshy=def.range*2},
-						}, nil)
+					if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
+						collided = true
+						obj:punch(self.object, 1.0, {
+								full_punch_interval=1.0,
+								damage_groups={fleshy=def.range*2},
+							}, nil)
 					end
 				end
-			elseif node.name ~= "air" then
+
+				if collided then
+					spacecannon.destroy(pos, def.range)
+					self.object:remove()
+				end
+
+			elseif node.name ~= "air" and node.name ~= "vacuum:vacuum" then
 				-- collision
 				spacecannon.destroy(pos, def.range)
 				self.object:remove()
@@ -109,23 +116,11 @@ local register_spacecannon = function(def)
 			local meta = minetest.get_meta(pos)
 			meta:set_int("powerstorage", 0)
 
-			local inv = meta:get_inventory()
-			inv:set_size("main", 8)
-
-			if has_technic_mod then
-				meta:set_int("HV_EU_input", 0)
-				meta:set_int("HV_EU_demand", 0)
-			end
+			meta:set_int("HV_EU_input", 0)
+			meta:set_int("HV_EU_demand", 0)
 
 			spacecannon.update_formspec(meta)
 		end,
-
-		can_dig = function(pos,player)
-			local meta = minetest.get_meta(pos);
-			local inv = meta:get_inventory()
-			return inv:is_empty("main")
-		end,
-
 
 		technic_run = function(pos, node)
 			local meta = minetest.get_meta(pos)
@@ -156,9 +151,7 @@ local register_spacecannon = function(def)
 
 	})
 
-	if has_technic_mod then
-		technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
-	end
+	technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
 
 	minetest.register_craft({
 		output = 'spacecannon:cannon_' .. def.color,

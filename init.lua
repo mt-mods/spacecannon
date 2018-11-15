@@ -5,12 +5,7 @@ spacecannon = {
 		powerstorage = 10000,
 
 		-- charge value in EU
-		powerrequirement = 2500,
-
-		-- fuel item and count
-		power_item = "default:mese_crystal",
-		power_item_count = 1
-
+		powerrequirement = 2500
 
 	}
 }
