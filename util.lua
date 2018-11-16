@@ -1,4 +1,4 @@
-
+local has_warzone_mod = minetest.get_modpath("warzone")
 
 spacecannon.update_formspec = function(meta)
 	meta:set_string("formspec", "size[8,2;]" ..
@@ -6,6 +6,19 @@ spacecannon.update_formspec = function(meta)
 end
 
 spacecannon.fire = function(pos, color, speed, range)
+
+
+	if has_warzone_mod then
+		-- check warzone height
+		local min_y = warzone.y_start
+		local max_y = warzone.y_start + warzone.y_height
+
+		if pos.y < min_y or pos.y > max_y then
+			-- not in warzone
+			return
+		end
+	end
+
 	-- check fuel/power
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")

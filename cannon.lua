@@ -1,4 +1,5 @@
 
+
 local register_spacecannon = function(def)
 
 	local entity_texture = "energycube_" .. def.color .. ".png"
