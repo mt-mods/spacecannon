@@ -91,7 +91,6 @@ local register_spacecannon = function(def)
 			"cannon_blank.png",
 			"cannon_blank.png"
 		},
-		inventory_image = minetest.inventorycube("cannon_front_" .. def.color .. ".png", "cannon_blank.png", "cannon_blank.png"),
 
 		groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 		drop = "spacecannon:cannon_" .. def.color,
