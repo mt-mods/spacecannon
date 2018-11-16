@@ -2,7 +2,7 @@ local has_warzone_mod = minetest.get_modpath("warzone")
 
 spacecannon.update_formspec = function(meta)
 	meta:set_string("formspec", "size[8,2;]" ..
-		"button_exit[0,2;8,1;fire;Fire]")
+		"button_exit[0,1;8,1;fire;Fire]")
 end
 
 spacecannon.fire = function(pos, color, speed, range)
