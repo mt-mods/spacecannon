@@ -44,7 +44,7 @@ local register_spacecannon = function(def)
 			local node = minetest.get_node(pos)
 
 			if node.name == "air" or node.name == "vacuum:vacuum" then
-				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 3)
+				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 				local collided = false
 				for k, obj in pairs(objs) do
 					if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
