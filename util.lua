@@ -7,7 +7,6 @@ end
 
 spacecannon.fire = function(pos, color, speed, range)
 
-
 	if has_warzone_mod then
 		-- check warzone height
 		local min_y = warzone.y_start
@@ -32,6 +31,11 @@ spacecannon.fire = function(pos, color, speed, range)
 		meta:set_int("powerstorage", 0)
 	end
 
+	minetest.sound_play("spacecannon_shoot", {
+		pos = pos,
+		gain = 1.0,
+		max_hear_distance = 16
+	})
 
 	local node = minetest.get_node(pos)
 	local dir = spacecannon.facedir_to_down_dir(node.param2)
