@@ -1,4 +1,5 @@
 
+local cable_entry = "^technic_cable_connection_overlay.png"
 
 local register_spacecannon = function(def)
 
@@ -84,12 +85,12 @@ local register_spacecannon = function(def)
 		description = "Spacecannon (" .. def.desc .. ")",
 		-- top, bottom
 		tiles = {
-			"cannon_blank.png",
+			"cannon_blank.png" .. cable_entry,
 			"cannon_front_" .. def.color .. ".png",
-			"cannon_blank.png",
-			"cannon_blank.png",
-			"cannon_blank.png",
-			"cannon_blank.png"
+			"cannon_blank.png" .. cable_entry,
+			"cannon_blank.png" .. cable_entry,
+			"cannon_blank.png" .. cable_entry,
+			"cannon_blank.png" .. cable_entry
 		},
 
 		groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
