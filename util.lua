@@ -77,12 +77,15 @@ spacecannon.destroy = function(pos, range, intensity)
 
 						else
 							-- default behavior
-							minetest.set_node(np, {name="air"})
-							local itemstacks = minetest.get_node_drops(n.name)
-							for _, itemname in ipairs(itemstacks) do
-								if math.random(5) == 5 then
-									-- chance drop
-									minetest.add_item(np, itemname)
+							local resilience = spacecannon.node_resilience[n.name] or 1
+							if resilience <= 1 or math.random(resilience) == resilience then
+								minetest.set_node(np, {name="air"})
+								local itemstacks = minetest.get_node_drops(n.name)
+								for _, itemname in ipairs(itemstacks) do
+									if math.random(5) == 5 then
+										-- chance drop
+										minetest.add_item(np, itemname)
+									end
 								end
 							end
 						end
