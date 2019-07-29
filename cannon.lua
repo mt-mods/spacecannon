@@ -42,8 +42,11 @@ local register_spacecannon = function(def)
 			end
 
 			local node = minetest.get_node(pos)
+			local node_def = minetest.registered_nodes[node.name]
 
-			if node.name == "air" or node.name == "vacuum:vacuum" then
+			local goes_through = not node_def.walkable
+
+			if goes_through then
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 				local collided = false
 				for k, obj in pairs(objs) do
@@ -61,7 +64,7 @@ local register_spacecannon = function(def)
 					self.object:remove()
 				end
 
-			elseif node.name ~= "air" and node.name ~= "vacuum:vacuum" then
+			else
 				-- collision
 				spacecannon.destroy(pos, def.range, def.intensity)
 				self.object:remove()
