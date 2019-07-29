@@ -1,21 +1,21 @@
-local has_warzone_mod = minetest.get_modpath("warzone")
 
 spacecannon.update_formspec = function(meta)
 	meta:set_string("formspec", "size[8,2;]" ..
 		"button_exit[0,1;8,1;fire;Fire]")
 end
 
+spacecannon.can_shoot = function(pos)
+	return true
+end
+
+spacecannon.can_destroy = function(pos)
+	return true
+end
+
 spacecannon.fire = function(pos, color, speed, range)
 
-	if has_warzone_mod then
-		-- check warzone height
-		local min_y = warzone.y_start
-		local max_y = warzone.y_start + warzone.y_height
-
-		if pos.y < min_y or pos.y > max_y then
-			-- not in warzone
-			return
-		end
+	if not spacecannon.can_shoot(pos) then
+		return
 	end
 
 	-- check fuel/power
@@ -46,6 +46,11 @@ end
 -- destroy stuff in range
 -- TODO: resilient material list
 spacecannon.destroy = function(pos,range)
+
+	if not spacecannon.can_destroy(pos) then
+		return
+	end
+
 	for x=-range,range do
 		for y=-range,range do
 			for z=-range,range do
