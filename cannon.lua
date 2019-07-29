@@ -57,22 +57,22 @@ local register_spacecannon = function(def)
 				end
 
 				if collided then
-					spacecannon.destroy(pos, def.range)
+					spacecannon.destroy(pos, def.range, def.intensity)
 					self.object:remove()
 				end
 
 			elseif node.name ~= "air" and node.name ~= "vacuum:vacuum" then
 				-- collision
-				spacecannon.destroy(pos, def.range)
+				spacecannon.destroy(pos, def.range, def.intensity)
 				self.object:remove()
 
 			end
 		end,
 
 		on_activate = function(self, staticdata)
-				minetest.after(def.timeout, 
-					function(self) 
-						self.object:remove()
+				minetest.after(def.timeout,
+					function(me)
+						me.object:remove()
 					end,
 					self)
 		end
@@ -143,8 +143,6 @@ local register_spacecannon = function(def)
 		end,
 
 		on_receive_fields = function(pos, formname, fields, sender)
-			local meta = minetest.get_meta(pos);
-
 			if fields.fire then
 				spacecannon.fire(pos, def.color, def.speed, def.range)
 			end
@@ -170,6 +168,7 @@ end
 register_spacecannon({
 	color = "green",
 	range = 1,
+	intensity = 1,
 	timeout = 8,
 	speed = 10,
 	desc = "fast,low damage",
@@ -179,6 +178,7 @@ register_spacecannon({
 register_spacecannon({
 	color = "yellow",
 	range = 3,
+	intensity = 2,
 	timeout = 8,
 	speed = 5,
 	desc = "medium speed, medium damage",
@@ -188,6 +188,7 @@ register_spacecannon({
 register_spacecannon({
 	color = "red",
 	range = 5,
+	intensity = 4,
 	timeout = 15,
 	speed = 3,
 	desc = "slow, heavy damage",

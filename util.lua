@@ -20,7 +20,6 @@ spacecannon.fire = function(pos, color, speed, range)
 
 	-- check fuel/power
 	local meta = minetest.get_meta(pos)
-	local owner = meta:get_string("owner")
 
 	if meta:get_int("powerstorage") < spacecannon.config.powerstorage * range then
 		-- not enough power
@@ -45,11 +44,13 @@ end
 
 -- destroy stuff in range
 -- TODO: resilient material list
-spacecannon.destroy = function(pos,range)
+spacecannon.destroy = function(pos, range, intensity)
 
 	if not spacecannon.can_destroy(pos) then
 		return
 	end
+
+	local particle_texture = nil
 
 	for x=-range,range do
 		for y=-range,range do
@@ -64,14 +65,28 @@ spacecannon.destroy = function(pos,range)
 					local n = minetest.get_node_or_nil(np)
 
 					if n and n.name ~= "air" then
-						minetest.set_node(np, {name="air"})
-						local itemstacks = minetest.get_node_drops(n.name)
-						for _, itemname in ipairs(itemstacks) do
-							if math.random(5) == 5 then
-								-- chance drop
-								minetest.add_item(np, itemname)
+						local node_def = minetest.registered_nodes[n.name]
+
+						if node_def and node_def.tiles and node_def.tiles[1] then
+							particle_texture = node_def.tiles[1]
+						end
+
+						if node_def.on_blast then
+							-- custom on_blast
+							node_def.on_blast(np, intensity)
+
+						else
+							-- default behavior
+							minetest.set_node(np, {name="air"})
+							local itemstacks = minetest.get_node_drops(n.name)
+							for _, itemname in ipairs(itemstacks) do
+								if math.random(5) == 5 then
+									-- chance drop
+									minetest.add_item(np, itemname)
+								end
 							end
 						end
+
 					end
 				end
 			end
@@ -97,6 +112,25 @@ spacecannon.destroy = function(pos,range)
 			texture = "spacecannon_spark.png",
 			glow = 5
 	})
+
+	if particle_texture then
+		minetest.add_particlespawner({
+				amount = 64,
+				time = 0.5,
+				minpos = vector.subtract(pos, radius / 2),
+				maxpos = vector.add(pos, radius / 2),
+				minvel = {x = -10, y = -10, z = -10},
+				maxvel = {x = 10, y = 10, z = 10},
+				minacc = vector.new(),
+				maxacc = vector.new(),
+				minexptime = 1,
+				maxexptime = 2.5,
+				minsize = radius * 3,
+				maxsize = radius * 5,
+				texture = particle_texture,
+				glow = 5
+		})
+	end
 
 	minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = math.min(radius * 20, 128)})
 
