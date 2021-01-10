@@ -1,6 +1,8 @@
 
 Spacecannon mod
 
+[![ContentDB](https://content.minetest.net/packages/BuckarooBanzay/spacecannon/shields/downloads/)](https://content.minetest.net/packages/BuckarooBanzay/spacecannon/)
+
 # Overview
 
 Adds three scifi/space cannons with various projectile-speed and explosion-strength.
