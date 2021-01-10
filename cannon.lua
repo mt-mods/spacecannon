@@ -111,6 +111,17 @@ local register_spacecannon = function(def)
 		connects_to = {"group:technic_hv_cable"},
 		connect_sides = {"bottom", "top", "left", "right", "front", "back"},
 
+		digiline = {
+			receptor = {
+				rules = spacecannon.digiline_rules,
+				action = function() end
+			},
+			effector = {
+				rules = spacecannon.digiline_rules,
+				action = spacecannon.digiline_effector
+			},
+		},
+
 		after_place_node = function(pos, placer)
 			local meta = minetest.get_meta(pos)
 			meta:set_string("owner", placer:get_player_name() or "")
@@ -122,6 +133,9 @@ local register_spacecannon = function(def)
 
 			meta:set_int("HV_EU_input", 0)
 			meta:set_int("HV_EU_demand", 0)
+
+			-- Set default digiline channel (do before updating formspec).
+			meta:set_string("channel", "spacecannon")
 
 			spacecannon.update_formspec(meta)
 		end,
@@ -146,9 +160,17 @@ local register_spacecannon = function(def)
 		end,
 
 		on_receive_fields = function(pos, formname, fields, sender)
+			local meta = minetest.get_meta(pos)
+
 			if fields.fire then
 				spacecannon.fire(pos, def.color, def.speed, def.range)
 			end
+
+			if fields.set_digiline_channel and fields.digiline_channel then
+				meta:set_string("channel", fields.digiline_channel)
+			end
+
+			spacecannon.update_formspec(meta)
 		end
 
 	})

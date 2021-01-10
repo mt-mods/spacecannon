@@ -13,6 +13,7 @@ spacecannon = {
 local MP = minetest.get_modpath("spacecannon")
 
 dofile(MP.."/util.lua")
+dofile(MP.."/digiline.lua")
 dofile(MP.."/cannon.lua")
 dofile(MP.."/node_resilience.lua")
 
