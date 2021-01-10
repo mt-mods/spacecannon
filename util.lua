@@ -1,7 +1,30 @@
+local has_digilines = minetest.get_modpath("digilines")
+
+spacecannon.update_formspec_digilines = function(meta)
+	local channel = meta:get_string("channel") or ""
+
+	local formspec =
+		"formspec_version[4]" ..
+		"size[6,4;]" ..
+
+		-- Digiline channel
+		"field[0.5,0.5;3.5,1;digiline_channel;Digiline Channel;" ..
+		channel .. "]" ..
+		"button_exit[4.5,0.5;1,1;set_digiline_channel;Set]" ..
+
+		-- Manual "fire" button
+		"button_exit[0.5,2.5;5,1;fire;Fire]"
+
+	meta:set_string("formspec", formspec)
+end
 
 spacecannon.update_formspec = function(meta)
-	meta:set_string("formspec", "size[8,2;]" ..
-		"button_exit[0,1;8,1;fire;Fire]")
+	if has_digilines then
+		spacecannon.update_formspec_digilines(meta)
+	else
+		meta:set_string("formspec", "size[8,2;]" ..
+			"button_exit[0,1;8,1;fire;Fire]")
+	end
 end
 
 spacecannon.can_shoot = function(pos)
