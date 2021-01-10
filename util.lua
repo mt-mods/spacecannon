@@ -27,11 +27,13 @@ spacecannon.update_formspec = function(meta)
 	end
 end
 
-spacecannon.can_shoot = function(pos)
+spacecannon.can_shoot = function()
+	-- arguments: pos
 	return true
 end
 
-spacecannon.can_destroy = function(pos)
+spacecannon.can_destroy = function()
+	-- arguments: pos
 	return true
 end
 
@@ -173,5 +175,3 @@ spacecannon.facedir_to_down_dir = function(facing)
 		{x=1, y=0, z=0},
 		{x=0, y=1, z=0}})[math.floor(facing/4)]
 end
-
-

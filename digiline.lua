@@ -10,7 +10,7 @@ spacecannon.digiline_rules = {
 	{x= 0,y= 1,z= 0},{x= 0,y=-1,z= 0}, -- along y above and below
 }
 
-spacecannon.digiline_handler_get = function(pos, node, channel, msg)
+spacecannon.digiline_handler_get = function(pos, node, channel)
 	local meta = minetest.get_meta(pos)
 
 	local input = meta:get_int("HV_EU_input")
@@ -31,7 +31,7 @@ spacecannon.digiline_handler_get = function(pos, node, channel, msg)
 	digilines.receptor_send(pos, spacecannon.digiline_rules, channel, resp)
 end
 
-spacecannon.digiline_handler_fire = function(pos, node, channel, msg)
+spacecannon.digiline_handler_fire = function(pos, node, channel)
 	local meta = minetest.get_meta(pos)
 
 	-- TODO: Add ability to set "target node" in the msg, and if its within

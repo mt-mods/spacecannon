@@ -49,7 +49,7 @@ local register_spacecannon = function(def)
 			if goes_through then
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 				local collided = false
-				for k, obj in pairs(objs) do
+				for _, obj in pairs(objs) do
 					if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
 						collided = true
 						obj:punch(self.object, 1.0, {
@@ -72,7 +72,7 @@ local register_spacecannon = function(def)
 			end
 		end,
 
-		on_activate = function(self, staticdata)
+		on_activate = function(self)
 				minetest.after(def.timeout,
 					function(me)
 						me.object:remove()
@@ -103,7 +103,7 @@ local register_spacecannon = function(def)
 		legacy_facedir_simple = true,
 
 		mesecons = {effector = {
-			action_on = function (pos, node)
+			action_on = function (pos)
 				spacecannon.fire(pos, def.color, def.speed, def.range)
 			end
 		}},
@@ -140,7 +140,7 @@ local register_spacecannon = function(def)
 			spacecannon.update_formspec(meta)
 		end,
 
-		technic_run = function(pos, node)
+		technic_run = function(pos)
 			local meta = minetest.get_meta(pos)
 			local eu_input = meta:get_int("HV_EU_input")
 			local demand = meta:get_int("HV_EU_demand")
@@ -159,7 +159,13 @@ local register_spacecannon = function(def)
 			end
 		end,
 
-		on_receive_fields = function(pos, formname, fields, sender)
+		on_receive_fields = function(pos, _, fields, sender)
+			local playername = sender and sender:get_player_name() or ""
+			if minetest.is_protected(pos, playername) then
+				-- only allow protection-owner to fire and configure
+				return
+			end
+
 			local meta = minetest.get_meta(pos)
 
 			if fields.fire then
@@ -219,7 +225,3 @@ register_spacecannon({
 	desc = "slow, heavy damage",
 	ingredient = "spacecannon:cannon_yellow"
 })
-
-
-
-

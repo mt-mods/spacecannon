@@ -1,8 +1,4 @@
-unused_args = false
-allow_defined_top = true
-
 globals = {
-	"minetest",
 	"spacecannon"
 }
 
@@ -12,7 +8,7 @@ read_globals = {
 	table = {fields = {"copy", "getn"}},
 
 	-- mod deps
-	"technic", "default",
+	"technic", "default", "digilines",
 
 	-- Minetest
 	"minetest",
