@@ -9,15 +9,30 @@ local register_spacecannon = function(def)
 		initial_properties = {
 			visual = "cube",
 			visual_size = {x=0.25, y=0.25},
-			textures = {entity_texture,entity_texture,entity_texture,entity_texture,entity_texture,entity_texture},
+			textures = {
+				entity_texture,
+				entity_texture,
+				entity_texture,
+				entity_texture,
+				entity_texture,
+				entity_texture
+			},
 			collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
 			physical = false
 		},
 		timer = 0,
+		lifetime = 0,
 		static_save = false,
 
 		on_step = function(self, dtime)
 			self.timer = self.timer + dtime
+			self.lifetime = self.lifetime + dtime
+
+			if self.lifetime > def.timeout then
+				self.object:remove()
+				return
+			end
+
 			local pos = self.object:getpos()
 
 			if self.timer > 0.5 then
@@ -70,16 +85,7 @@ local register_spacecannon = function(def)
 				self.object:remove()
 
 			end
-		end,
-
-		on_activate = function(self)
-				minetest.after(def.timeout,
-					function(me)
-						me.object:remove()
-					end,
-					self)
 		end
-
 	})
 
 
