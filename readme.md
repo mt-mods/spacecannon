@@ -83,6 +83,15 @@ Example response from a "fire" request:
 }
 ```
 
+# Api
+
+Modify the ability to shoot depending on position or playername:
+```lua
+spacecannon.can_shoot = function(pos, playername)
+	return true
+end
+```
+
 # Contributors
 
 * @BuckarooBanzay

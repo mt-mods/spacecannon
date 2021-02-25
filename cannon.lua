@@ -110,7 +110,9 @@ local register_spacecannon = function(def)
 
 		mesecons = {effector = {
 			action_on = function (pos)
-				spacecannon.fire(pos, def.color, def.speed, def.range)
+				local meta = minetest.get_meta(pos)
+				local owner = meta:get_string("owner")
+				spacecannon.fire(pos, owner, def.color, def.speed, def.range)
 			end
 		}},
 
@@ -175,7 +177,7 @@ local register_spacecannon = function(def)
 			local meta = minetest.get_meta(pos)
 
 			if fields.fire then
-				spacecannon.fire(pos, def.color, def.speed, def.range)
+				spacecannon.fire(pos, playername, def.color, def.speed, def.range)
 			end
 
 			if fields.set_digiline_channel and fields.digiline_channel then

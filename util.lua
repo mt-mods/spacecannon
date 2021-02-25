@@ -28,7 +28,7 @@ spacecannon.update_formspec = function(meta)
 end
 
 spacecannon.can_shoot = function()
-	-- arguments: pos
+	-- arguments: pos, playername
 	return true
 end
 
@@ -37,9 +37,9 @@ spacecannon.can_destroy = function()
 	return true
 end
 
-spacecannon.fire = function(pos, color, speed, range)
+spacecannon.fire = function(pos, playername, color, speed, range)
 
-	if not spacecannon.can_shoot(pos) then
+	if not spacecannon.can_shoot(pos, playername) then
 		return
 	end
 
