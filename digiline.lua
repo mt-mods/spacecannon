@@ -31,7 +31,7 @@ spacecannon.digiline_handler_get = function(pos, node, channel)
 	digilines.receptor_send(pos, spacecannon.digiline_rules, channel, resp)
 end
 
-spacecannon.digiline_handler_fire = function(pos, node, channel)
+spacecannon.digiline_handler_fire = function(pos, node, channel, msg)
 	local meta = minetest.get_meta(pos)
 
 	-- TODO: Add ability to set "target node" in the msg, and if its within
@@ -60,7 +60,14 @@ spacecannon.digiline_handler_fire = function(pos, node, channel)
 		pos = pos
 	}
 
-	digilines.receptor_send(pos, spacecannon.digiline_rules, channel, resp)
+	-- Only send response if the fire request specifically asked for it.
+	-- Consider a large (N) bank of cannons on the same digiline.  Firing all N
+	-- at the same time would generate N responses, which would be seen by the LUAC
+	-- and the (N-1) other cannons, resulting in N^2 message processing.  If N>20,
+	-- the LUAC will get fried.
+	if msg.verbose then
+		digilines.receptor_send(pos, spacecannon.digiline_rules, channel, resp)
+	end
 end
 
 spacecannon.digiline_effector = function(pos, node, channel, msg)
