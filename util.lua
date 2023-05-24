@@ -16,11 +16,11 @@ spacecannon.update_formspec = function(meta, is_th)
 			"list[current_player;main;0.375,4;8,4;]" ..
 			"listring[]" ..
 			"label[1.75,1;Ammunition]"
-	
+
 		-- Manual "fire" button
 		formspec = formspec ..
 			"button_exit[5.125,0.5;5,1;fire;Fire]"
-	
+
 		-- Digiline channel
 		if has_digilines then
 			local channel = meta:get_string("channel") or ""

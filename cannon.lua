@@ -122,7 +122,7 @@ local register_spacecannon = function(def)
 			action_on = function (pos)
 				local meta = minetest.get_meta(pos)
 				local owner = meta:get_string("owner")
-				spacecannon.fire(pos, owner, def.color, def.speed, def.range, def.is_th)
+				spacecannon.fire(pos, owner, def.color, def.speed, def.is_th, def.storage_require_mod)
 			end
 		}},
 
@@ -197,7 +197,7 @@ local register_spacecannon = function(def)
 			local meta = minetest.get_meta(pos)
 
 			if fields.fire then
-				spacecannon.fire(pos, playername, def.color, def.speed, def.range, def.is_th, def.storage_require_mod)
+				spacecannon.fire(pos, playername, def.color, def.speed, def.is_th, def.storage_require_mod)
 			end
 
 			if fields.set_digiline_channel and fields.digiline_channel then
@@ -207,7 +207,7 @@ local register_spacecannon = function(def)
 			spacecannon.update_formspec(meta, def.is_th)
 		end,
 
-		after_dig_node = function(pos, node, meta, _digger)
+		after_dig_node = function(pos, _node, meta, _digger)
 			if meta.inventory and meta.inventory.src and meta.inventory.src[1] then
 				minetest.add_item(pos, ItemStack(meta.inventory.src[1]))
 			end
