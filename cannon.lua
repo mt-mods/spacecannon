@@ -1,3 +1,4 @@
+-- vi: noexpandtab
 
 local cable_entry = "^technic_cable_connection_overlay.png"
 
@@ -23,6 +24,7 @@ local register_spacecannon = function(def)
 		timer = 0,
 		lifetime = 0,
 		static_save = false,
+		penetrated = 0,
 
 		on_step = function(self, dtime)
 			self.timer = self.timer + dtime
@@ -65,25 +67,33 @@ local register_spacecannon = function(def)
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 				local collided = false
 				for _, obj in pairs(objs) do
-					if obj:get_luaentity() ~= nil and obj:get_luaentity().name ~= self.name then
+					if obj:get_luaentity() ~= nil
+						and obj:get_luaentity().name ~= self.name
+						and obj:get_luaentity().name ~= "__builtin:item"
+					then
 						collided = true
 						obj:punch(self.object, 1.0, {
 								full_punch_interval=1.0,
-								damage_groups={fleshy=def.range*2},
+								damage_groups={fleshy=def.damage},
 							}, nil)
 					end
 				end
 
 				if collided then
 					spacecannon.destroy(pos, def.range, def.intensity)
-					self.object:remove()
+					self.penetrated = self.penetrated + 1
+					if self.penetrated >= def.penetration then
+						self.object:remove()
+					end
 				end
 
 			else
 				-- collision
 				spacecannon.destroy(pos, def.range, def.intensity)
-				self.object:remove()
-
+				self.penetrated = self.penetrated + 1
+				if self.penetrated >= def.penetration then
+					self.object:remove()
+				end
 			end
 		end
 	})
@@ -112,7 +122,7 @@ local register_spacecannon = function(def)
 			action_on = function (pos)
 				local meta = minetest.get_meta(pos)
 				local owner = meta:get_string("owner")
-				spacecannon.fire(pos, owner, def.color, def.speed, def.range)
+				spacecannon.fire(pos, owner, def.color, def.speed, def.range, def.is_th)
 			end
 		}},
 
@@ -145,7 +155,13 @@ local register_spacecannon = function(def)
 			-- Set default digiline channel (do before updating formspec).
 			meta:set_string("channel", "spacecannon")
 
-			spacecannon.update_formspec(meta)
+			-- Set inventory (not used for thermal cannons)
+			if not def.is_th then
+				local inv = meta:get_inventory()
+				inv:set_size("src", 1)
+			end
+
+			spacecannon.update_formspec(meta, def.is_th)
 		end,
 
 		technic_run = function(pos)
@@ -154,13 +170,17 @@ local register_spacecannon = function(def)
 			local demand = meta:get_int("HV_EU_demand")
 			local store = meta:get_int("powerstorage")
 
+			local config_store = spacecannon.config.ki_powerstorage * def.storage_require_mod
+			if def.is_th then config_store = spacecannon.config.th_powerstorage * def.storage_require_mod end
+			local config_require = spacecannon.config.ki_powerrequirement
+			if def.is_th then config_require = spacecannon.config.th_powerrequirement end
+
 			meta:set_string("infotext", "Power: " .. eu_input .. "/" .. demand .. " Store: " .. store)
 
-			if store < spacecannon.config.powerstorage * def.range then
+			if store < config_store then
 				-- charge
-				meta:set_int("HV_EU_demand", spacecannon.config.powerrequirement)
-				store = store + eu_input
-				meta:set_int("powerstorage", store)
+				meta:set_int("HV_EU_demand", config_require)
+				meta:set_int("powerstorage", store + eu_input)
 			else
 				-- charged
 				meta:set_int("HV_EU_demand", 0)
@@ -177,16 +197,21 @@ local register_spacecannon = function(def)
 			local meta = minetest.get_meta(pos)
 
 			if fields.fire then
-				spacecannon.fire(pos, playername, def.color, def.speed, def.range)
+				spacecannon.fire(pos, playername, def.color, def.speed, def.range, def.is_th, def.storage_require_mod)
 			end
 
 			if fields.set_digiline_channel and fields.digiline_channel then
 				meta:set_string("channel", fields.digiline_channel)
 			end
 
-			spacecannon.update_formspec(meta)
-		end
+			spacecannon.update_formspec(meta, def.is_th)
+		end,
 
+		after_dig_node = function(pos, node, meta, _digger)
+			if meta.inventory and meta.inventory.src and meta.inventory.src[1] then
+				minetest.add_item(pos, ItemStack(meta.inventory.src[1]))
+			end
+		end
 	})
 
 	technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
@@ -205,31 +230,75 @@ local register_spacecannon = function(def)
 end
 
 register_spacecannon({
+	is_th = true,
 	color = "green",
 	range = 1,
+	storage_require_mod = 1,
+	damage = 2,
 	intensity = 1,
-	timeout = 8,
-	speed = 10,
+	timeout = 6,
+	speed = 8,
+	penetration = 0,
 	desc = "fast,low damage",
 	ingredient = "default:mese_block"
 })
 
 register_spacecannon({
+	is_th = true,
 	color = "yellow",
 	range = 3,
+	storage_require_mod = 3,
 	intensity = 2,
+	damage = 6,
 	timeout = 8,
 	speed = 5,
+	penetration = 0,
 	desc = "medium speed, medium damage",
 	ingredient = "spacecannon:cannon_green"
 })
 
 register_spacecannon({
+	is_th = true,
 	color = "red",
 	range = 5,
+	storage_require_mod = 5,
 	intensity = 4,
+	damage = 10,
 	timeout = 15,
 	speed = 3,
+	penetration = 0,
 	desc = "slow, heavy damage",
 	ingredient = "spacecannon:cannon_yellow"
+})
+
+-- Railguns
+
+-- Regular railgun
+register_spacecannon({
+	is_th = false,
+	color = "blue",
+	range = 0,
+	storage_require_mod = 1,
+	intensity = 2,
+	damage = 5,
+	timeout = 10,
+	speed = 9,
+	penetration = 2,
+	desc = "fast, 2x penetrating damage",
+	ingredient = "technic:copper_coil"
+})
+
+-- Helical railgun
+register_spacecannon({
+	is_th = false,
+	color = "purple",
+	range = 0,
+	storage_require_mod = 1.5,
+	intensity = 4,
+	damage = 10,
+	timeout = 15,
+	speed = 10,
+	penetration = 4,
+	desc = "fast, 4x penetrating damage",
+	ingredient = "spacecannon:cannon_blue"
 })
