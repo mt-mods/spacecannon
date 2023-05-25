@@ -236,8 +236,8 @@ register_spacecannon({
 	storage_require_mod = 1,
 	damage = 2,
 	intensity = 1,
-	timeout = 6,
-	speed = 8,
+	timeout = 8,
+	speed = 10,
 	penetration = 0,
 	desc = "fast,low damage",
 	ingredient = "default:mese_block"
