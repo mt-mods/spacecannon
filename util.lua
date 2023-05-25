@@ -63,8 +63,7 @@ spacecannon.can_destroy = function()
 	return true
 end
 
-spacecannon.fire = function(pos, playername, color, speed, range, is_th, storage_require_mod)
-
+spacecannon.fire = function(pos, playername, color, speed, is_th, storage_require_mod)
 	if not spacecannon.can_shoot(pos, playername) then
 		return
 	end
