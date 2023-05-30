@@ -1,30 +1,56 @@
+-- vi: noexpandtab
+
 local has_digilines = minetest.get_modpath("digilines")
 
-spacecannon.update_formspec_digilines = function(meta)
-	local channel = meta:get_string("channel") or ""
+spacecannon.update_formspec = function(meta, is_th)
+	local formspec = ""
 
-	local formspec =
-		"formspec_version[4]" ..
-		"size[6,4;]" ..
+	if not is_th then
+		formspec = formspec ..
+			"formspec_version[4]" ..
+			"size[10.5,9;]"
 
-		-- Digiline channel
-		"field[0.5,0.5;3.5,1;digiline_channel;Digiline Channel;" ..
-		channel .. "]" ..
-		"button_exit[4.5,0.5;1,1;set_digiline_channel;Set]" ..
+		-- Ammo inventory
+		formspec = formspec ..
+			"list[current_name;src;0.375,0.5;1,1;]" ..
+			"list[current_player;main;0.375,4;8,4;]" ..
+			"listring[]" ..
+			"label[1.75,1;Ammunition]"
 
 		-- Manual "fire" button
-		"button_exit[0.5,2.5;5,1;fire;Fire]"
+		formspec = formspec ..
+			"button_exit[5.125,0.5;5,1;fire;Fire]"
+
+		-- Digiline channel
+		if has_digilines then
+			local channel = meta:get_string("channel") or ""
+			formspec = formspec ..
+				"field[0.375,2.375;4,1;digiline_channel;Digiline Channel;" .. channel .. "]" ..
+				"button_exit[4.5,2.375;1,1;set_digiline_channel;Set]"
+		end
+	else
+		formspec = formspec .. "formspec_version[4]"
+
+		if has_digilines then
+			formspec = formspec .. "size[6,4;]"
+		else
+			formspec = formspec .. "size[6,2;]"
+		end
+
+		-- Manual "fire" button
+		formspec = formspec ..
+			"button_exit[0.5,0.5;5,1;fire;Fire]"
+
+		-- Digiline channel
+		if has_digilines then
+			local channel = meta:get_string("channel") or ""
+			formspec = formspec ..
+				"field[0.5,2.5;3.5,1;digiline_channel;Digiline Channel;" .. channel .. "]" ..
+				"button_exit[4.5,2.5;1,1;set_digiline_channel;Set]"
+		end
+	end
 
 	meta:set_string("formspec", formspec)
-end
-
-spacecannon.update_formspec = function(meta)
-	if has_digilines then
-		spacecannon.update_formspec_digilines(meta)
-	else
-		meta:set_string("formspec", "size[8,2;]" ..
-			"button_exit[0,1;8,1;fire;Fire]")
-	end
 end
 
 spacecannon.can_shoot = function()
@@ -37,8 +63,7 @@ spacecannon.can_destroy = function()
 	return true
 end
 
-spacecannon.fire = function(pos, playername, color, speed, range)
-
+spacecannon.fire = function(pos, playername, color, speed, is_th, storage_require_mod)
 	if not spacecannon.can_shoot(pos, playername) then
 		return
 	end
@@ -46,13 +71,36 @@ spacecannon.fire = function(pos, playername, color, speed, range)
 	-- check fuel/power
 	local meta = minetest.get_meta(pos)
 
-	if meta:get_int("powerstorage") < spacecannon.config.powerstorage * range then
+	local config_store = spacecannon.config.ki_powerstorage * storage_require_mod
+	if is_th then config_store = spacecannon.config.th_powerstorage * storage_require_mod end
+
+	if meta:get_int("powerstorage") < config_store then
 		-- not enough power
 		return
+	end
 
-	else
-		-- use power
-		meta:set_int("powerstorage", 0)
+	-- check ammunition
+	if not is_th then
+		local inv = meta:get_inventory()
+		if inv:is_empty("src") then
+			--minetest.chat_send_player(playername, "No ammunition loaded!")
+			return false
+		end
+		local src_stack = inv:get_list("src")[1]
+		if not src_stack or src_stack:get_name() ~= "spacecannon:railgun_slug" then
+			--minetest.chat_send_player(playername, "Incorrect ammunition!")
+			return
+		end
+	end
+
+	-- use power
+	meta:set_int("powerstorage", 0)
+
+	-- use ammo
+	if not is_th then
+		local src_stack = (meta:get_inventory()):get_list("src")[1]
+		src_stack:take_item();
+		(meta:get_inventory()):set_stack("src", 1, src_stack)
 	end
 
 	minetest.sound_play("spacecannon_shoot", {
