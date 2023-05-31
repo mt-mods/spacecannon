@@ -98,20 +98,22 @@ local register_spacecannon = function(def)
 		end
 	})
 
-
+	-- top, bottom
+	local textures = {
+		"cannon_blank.png" .. cable_entry,
+		"cannon_front_" .. def.color .. ".png",
+		"cannon_blank.png" .. cable_entry,
+		"cannon_blank.png" .. cable_entry,
+		"cannon_blank.png" .. cable_entry,
+		"cannon_blank.png" .. cable_entry
+	}
+	if def.textures then
+		textures = def.textures
+	end
 
 	minetest.register_node("spacecannon:cannon_" .. def.color, {
 		description = def.name .. " (" .. def.desc .. ")",
-
-		-- top, bottom
-		tiles = {
-			"cannon_blank.png" .. cable_entry,
-			"cannon_front_" .. def.color .. ".png",
-			"cannon_blank.png" .. cable_entry,
-			"cannon_blank.png" .. cable_entry,
-			"cannon_blank.png" .. cable_entry,
-			"cannon_blank.png" .. cable_entry
-		},
+		tiles = textures,
 
 		groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
 		drop = "spacecannon:cannon_" .. def.color,
@@ -286,6 +288,14 @@ register_spacecannon({
 	color = "blue",
 	name = "Railgun cannon",
 	desc = "fast, 2x penetrating damage",
+	textures = {
+		"railgun_blank.png" .. cable_entry,
+		"railgun_front.png",
+		"railgun_blank.png" .. cable_entry,
+		"railgun_blank.png" .. cable_entry,
+		"railgun_top_bottom.png",
+		"railgun_top_bottom.png",
+	},
 	is_th = false,
 	range = 0,
 	storage_require_mod = 1,
@@ -302,6 +312,14 @@ register_spacecannon({
 	color = "purple",
 	name = "Helical railgun cannon",
 	desc = "fast, 4x penetrating damage",
+	textures = {
+		"railgun_blank.png" .. cable_entry,
+		"helical_railgun_front.png",
+		"railgun_blank.png" .. cable_entry,
+		"railgun_blank.png" .. cable_entry,
+		"helical_railgun_top_bottom.png",
+		"helical_railgun_top_bottom.png",
+	},
 	is_th = false,
 	range = 0,
 	storage_require_mod = 1.5,
