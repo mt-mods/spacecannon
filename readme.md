@@ -103,6 +103,7 @@ end
 
 * @BuckarooBanzay
 * @dennisjenkins75
+* @kiedtl
 
 # License
 
