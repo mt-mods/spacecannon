@@ -101,7 +101,8 @@ local register_spacecannon = function(def)
 
 
 	minetest.register_node("spacecannon:cannon_" .. def.color, {
-		description = "Spacecannon (" .. def.desc .. ")",
+		description = def.name .. " (" .. def.desc .. ")",
+
 		-- top, bottom
 		tiles = {
 			"cannon_blank.png" .. cable_entry,
@@ -175,7 +176,11 @@ local register_spacecannon = function(def)
 			local config_require = spacecannon.config.ki_powerrequirement
 			if def.is_th then config_require = spacecannon.config.th_powerrequirement end
 
-			meta:set_string("infotext", "Power: " .. eu_input .. "/" .. demand .. " Store: " .. store)
+			local infotext =
+				"Power: " .. eu_input .. "/" .. demand .. " " ..
+				"Store: " .. store .. "\n" ..
+				def.name .. ": " .. def.desc
+			meta:set_string("infotext", infotext)
 
 			if store < config_store then
 				-- charge
@@ -230,8 +235,10 @@ local register_spacecannon = function(def)
 end
 
 register_spacecannon({
-	is_th = true,
 	color = "green",
+	name = "Ion cannon",
+	desc = "fast, low damage",
+	is_th = true,
 	range = 1,
 	storage_require_mod = 1,
 	damage = 2,
@@ -239,13 +246,14 @@ register_spacecannon({
 	timeout = 8,
 	speed = 10,
 	penetration = 0,
-	desc = "fast,low damage",
 	ingredient = "default:mese_block"
 })
 
 register_spacecannon({
-	is_th = true,
 	color = "yellow",
+	name = "Plasma cannon",
+	desc = "medium speed, medium damage",
+	is_th = true,
 	range = 3,
 	storage_require_mod = 3,
 	intensity = 2,
@@ -253,13 +261,14 @@ register_spacecannon({
 	timeout = 8,
 	speed = 5,
 	penetration = 0,
-	desc = "medium speed, medium damage",
 	ingredient = "spacecannon:cannon_green"
 })
 
 register_spacecannon({
-	is_th = true,
 	color = "red",
+	name = "Nova cannon",
+	desc = "slow, heavy damage",
+	is_th = true,
 	range = 5,
 	storage_require_mod = 5,
 	intensity = 4,
@@ -267,7 +276,6 @@ register_spacecannon({
 	timeout = 15,
 	speed = 3,
 	penetration = 0,
-	desc = "slow, heavy damage",
 	ingredient = "spacecannon:cannon_yellow"
 })
 
@@ -275,8 +283,10 @@ register_spacecannon({
 
 -- Regular railgun
 register_spacecannon({
-	is_th = false,
 	color = "blue",
+	name = "Railgun cannon",
+	desc = "fast, 2x penetrating damage",
+	is_th = false,
 	range = 0,
 	storage_require_mod = 1,
 	intensity = 2,
@@ -284,14 +294,15 @@ register_spacecannon({
 	timeout = 10,
 	speed = 9,
 	penetration = 2,
-	desc = "fast, 2x penetrating damage",
 	ingredient = "technic:copper_coil"
 })
 
 -- Helical railgun
 register_spacecannon({
-	is_th = false,
 	color = "purple",
+	name = "Helical railgun cannon",
+	desc = "fast, 4x penetrating damage",
+	is_th = false,
 	range = 0,
 	storage_require_mod = 1.5,
 	intensity = 4,
@@ -299,6 +310,5 @@ register_spacecannon({
 	timeout = 15,
 	speed = 10,
 	penetration = 4,
-	desc = "fast, 4x penetrating damage",
 	ingredient = "spacecannon:cannon_blue"
 })
