@@ -67,9 +67,10 @@ local register_spacecannon = function(def)
 				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 				local collided = false
 				for _, obj in pairs(objs) do
-					if obj:get_luaentity() ~= nil
+					if (obj:is_player() or (obj:get_luaentity() ~= nil
 						and obj:get_luaentity().name ~= self.name
-						and obj:get_luaentity().name ~= "__builtin:item"
+						and obj:get_luaentity().name ~= "__builtin:item"))
+						and spacecannon.can_damage(obj)
 					then
 						collided = true
 						obj:punch(self.object, 1.0, {
@@ -243,7 +244,7 @@ register_spacecannon({
 	is_th = true,
 	range = 1,
 	storage_require_mod = 1,
-	damage = 2,
+	damage = 5,
 	intensity = 1,
 	timeout = 8,
 	speed = 10,
@@ -259,7 +260,7 @@ register_spacecannon({
 	range = 3,
 	storage_require_mod = 3,
 	intensity = 2,
-	damage = 6,
+	damage = 8,
 	timeout = 8,
 	speed = 5,
 	penetration = 0,
@@ -300,7 +301,7 @@ register_spacecannon({
 	range = 0,
 	storage_require_mod = 1,
 	intensity = 2,
-	damage = 5,
+	damage = 6,
 	timeout = 10,
 	speed = 9,
 	penetration = 2,
@@ -324,7 +325,7 @@ register_spacecannon({
 	range = 0,
 	storage_require_mod = 1.5,
 	intensity = 4,
-	damage = 10,
+	damage = 6,
 	timeout = 15,
 	speed = 10,
 	penetration = 4,
