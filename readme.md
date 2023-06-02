@@ -5,7 +5,7 @@ Spacecannon mod
 
 # Overview
 
-Adds three scifi/space cannons with various projectile-speed and explosion-strength.
+Adds five scifi/space cannons with various projectile-speed and explosion-strength.
 The cannons need HV-Power from a `technic` network and can be controlled via formspec/hand, mesecons or digilines.
 They also need to charge first, which can take a couple of seconds depending on cannon-type.
 
