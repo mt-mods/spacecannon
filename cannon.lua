@@ -278,8 +278,6 @@ local register_spacecannon = function(def)
 		}
 	})
 
-
-
 end
 
 register_spacecannon({
