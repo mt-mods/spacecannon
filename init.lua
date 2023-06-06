@@ -12,6 +12,9 @@ spacecannon = {
 	node_resilience = {}
 }
 
+local has_digilines = minetest.get_modpath("digilines") and true
+local has_pipeworks = minetest.get_modpath("pipeworks") and true
+
 local MP = minetest.get_modpath("spacecannon")
 
 dofile(MP.."/util.lua")
@@ -21,3 +24,4 @@ dofile(MP.."/ammo.lua")
 dofile(MP.."/node_resilience.lua")
 
 print("[OK] Spacecannon")
+
