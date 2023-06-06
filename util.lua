@@ -15,6 +15,7 @@ spacecannon.update_formspec = function(meta, is_th)
 			"list[current_name;src;0.375,0.5;1,1;]" ..
 			"list[current_player;main;0.375,4;8,4;]" ..
 			"listring[]" ..
+			"item_image[0.375,0.5;1,1;spacecannon:railgun_slug]" ..
 			"label[1.75,1;Ammunition]"
 
 		-- Manual "fire" button
