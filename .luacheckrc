@@ -8,7 +8,7 @@ read_globals = {
 	table = {fields = {"copy", "getn"}},
 
 	-- mod deps
-	"technic", "default", "digilines",
+	"default", "digilines", "pipeworks", "technic"
 
 	-- Minetest
 	"minetest",
