@@ -1,5 +1,8 @@
 -- vi: noexpandtab
 
+local has_digilines = minetest.get_modpath("digilines") and true
+local has_pipeworks = minetest.get_modpath("pipeworks") and true
+
 local cable_entry = "^technic_cable_connection_overlay.png"
 
 local groups_base = {
