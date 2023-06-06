@@ -2,6 +2,19 @@
 
 local cable_entry = "^technic_cable_connection_overlay.png"
 
+local groups_base = {
+	cracky = 3,
+	oddly_breakable_by_hand = 3,
+	technic_machine = 1,
+	technic_hv = 1
+}
+
+local groups_rail = table.copy(groups_base)
+if has_pipeworks then
+	groups_rail.tubedevice = 1
+	groups_rail.tubedevice_receiver = 1
+end
+
 local register_spacecannon = function(def)
 
 	local entity_texture = "energycube_" .. def.color .. ".png"
@@ -112,11 +125,10 @@ local register_spacecannon = function(def)
 		textures = def.textures
 	end
 
-	minetest.register_node("spacecannon:cannon_" .. def.color, {
+	local def_cannon = {
 		description = def.name .. " (" .. def.desc .. ")",
 		tiles = textures,
-
-		groups = {cracky=3,oddly_breakable_by_hand=3,technic_machine = 1, technic_hv = 1},
+		groups = def.is_th and groups_base or groups_rail,
 		drop = "spacecannon:cannon_" .. def.color,
 		sounds = default.node_sound_glass_defaults(),
 		paramtype2 = "facedir",
@@ -220,7 +232,8 @@ local register_spacecannon = function(def)
 				minetest.add_item(pos, ItemStack(meta.inventory.src[1]))
 			end
 		end
-	})
+	}
+	minetest.register_node("spacecannon:cannon_" .. def.color, def_cannon)
 
 	technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
 
