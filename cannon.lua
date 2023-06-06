@@ -162,6 +162,9 @@ local register_spacecannon = function(def)
 		after_place_node = function(pos, placer)
 			local meta = minetest.get_meta(pos)
 			meta:set_string("owner", placer:get_player_name() or "")
+			if has_pipeworks then
+				pipeworks.after_place(pos)
+			end
 		end,
 
 		on_construct = function(pos)
@@ -234,8 +237,34 @@ local register_spacecannon = function(def)
 			if meta.inventory and meta.inventory.src and meta.inventory.src[1] then
 				minetest.add_item(pos, ItemStack(meta.inventory.src[1]))
 			end
+			if has_pipeworks then
+				pipeworks.after_dig(pos)
+			end
 		end
 	}
+
+	if has_pipeworks and not def.is_th then
+		def_cannon.tube = {
+			insert_object = function(pos, _, stack)
+				local meta = minetest.get_meta(pos)
+				local inv = meta:get_inventory()
+				return inv:add_item("src", stack)
+			end,
+			can_insert = function(pos, _, stack)
+				local meta = minetest.get_meta(pos)
+				local inv = meta:get_inventory()
+				stack = stack:peek_item(1)
+
+				return inv:room_for_item("src", stack)
+			end,
+			input_inventory = "src",
+			connect_sides = {
+				left = 1, back = 1, top = 1,
+				right = 1, front = 1, bottom = nil
+			}
+		}
+	end
+
 	minetest.register_node("spacecannon:cannon_" .. def.color, def_cannon)
 
 	technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
