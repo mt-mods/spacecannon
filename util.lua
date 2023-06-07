@@ -15,6 +15,7 @@ spacecannon.update_formspec = function(meta, is_th)
 			"list[current_name;src;0.375,0.5;1,1;]" ..
 			"list[current_player;main;0.375,4;8,4;]" ..
 			"listring[]" ..
+			"item_image[0.375,0.5;1,1;spacecannon:railgun_slug]" ..
 			"label[1.75,1;Ammunition]"
 
 		-- Manual "fire" button
@@ -102,9 +103,9 @@ spacecannon.fire = function(pos, playername, color, speed, is_th, storage_requir
 
 	-- use ammo
 	if not is_th then
-		local src_stack = (meta:get_inventory()):get_list("src")[1]
+		local src_stack = meta:get_inventory():get_list("src")[1]
 		src_stack:take_item();
-		(meta:get_inventory()):set_stack("src", 1, src_stack)
+		meta:get_inventory():set_stack("src", 1, src_stack)
 	end
 
 	minetest.sound_play("spacecannon_shoot", {
