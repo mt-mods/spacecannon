@@ -132,6 +132,7 @@ local register_spacecannon = function(def)
 		description = def.name .. " (" .. def.desc .. ")",
 		tiles = textures,
 		groups = def.is_th and groups_base or groups_rail,
+		is_ground_content = false,
 		drop = "spacecannon:cannon_" .. def.color,
 		sounds = default.node_sound_glass_defaults(),
 		paramtype2 = "facedir",
