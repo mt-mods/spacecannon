@@ -68,7 +68,7 @@ Example response from a "get" request:
 
 The "fire" request can specify an optional "verbose" flag.  If this flag
 evaluates to true, then the following example response will be sent back.
-Note that if you have a large number of cannons that you will likely want
+Note that if you have a large number of cannons, you will likely want
 to disable responses. N cannons firing and generating responses will
 cause N^2 messages to be processed, as each cannon receives the fire response
 from all of its peers. If N > 20, your LUAC will overheat. N > 900, and your
