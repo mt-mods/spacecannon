@@ -5,7 +5,7 @@ Spacecannon mod
 
 # Overview
 
-Adds five scifi/space cannons with various projectile-speed and explosion-strength.
+Adds five scifi/space cannons with various projectile-speeds and explosion-strengths.
 The cannons need HV-Power from a `technic` network and can be controlled via formspec/hand, mesecons or digilines.
 They also need to charge first, which can take a couple of seconds depending on cannon-type.
 
@@ -36,7 +36,7 @@ An "on" signal triggers a fire-action.
 Fire a cannon:
 ```lua
 if event.type == "program" then
- digiline_send("cannon", { command="fire", verbose=false })
+ digiline_send("cannon", { command = "fire", verbose = false })
 end
 ```
 
@@ -69,9 +69,9 @@ Example response from a "get" request:
 The "fire" request can specify an optional "verbose" flag.  If this flag
 evaluates to true, then the following example response will be sent back.
 Note that if you have a large number of cannons that you will likely want
-to disable responses.  N cannons firing and generating responses will
+to disable responses. N cannons firing and generating responses will
 cause N^2 messages to be processed, as each cannon receives the fire response
-from all of its peers.  If N>20, your LUAC will overheat.  N>900, and your
+from all of its peers. If N > 20, your LUAC will overheat. N > 900, and your
 server admin will want to have a chat with you.
 
 ```lua
