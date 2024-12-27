@@ -51,7 +51,7 @@ local register_spacecannon = function(def)
 				return
 			end
 
-			local pos = self.object:getpos()
+			local pos = self.object:get_pos()
 
 			if self.timer > 0.5 then
 				-- add sparks along the way
