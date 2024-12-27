@@ -35,11 +35,11 @@ local register_spacecannon = function(def)
 				entity_texture
 			},
 			collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
-			physical = false
+			physical = false,
+			static_save = false,
 		},
 		timer = 0,
 		lifetime = 0,
-		static_save = false,
 		penetrated = 0,
 
 		on_step = function(self, dtime)
