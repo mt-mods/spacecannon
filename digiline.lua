@@ -71,12 +71,14 @@ spacecannon.digiline_handler_fire = function(pos, node, channel, msg)
 end
 
 spacecannon.digiline_effector = function(pos, node, channel, msg)
+	if type(msg) == "string" then
+		msg = { command = msg:lower() }
+	end
 	if type(msg) ~= "table" then
 		return
 	end
 
 	local meta = minetest.get_meta(pos)
-
 	if channel ~= meta:get_string("channel") then
 		return
 	end
