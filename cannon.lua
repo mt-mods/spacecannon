@@ -281,97 +281,100 @@ local register_spacecannon = function(def)
 
 end
 
-register_spacecannon({
-	color = "green",
-	name = "Ion cannon",
-	desc = "fast, low damage",
-	is_th = true,
-	range = 1,
-	storage_require_mod = 1,
-	damage = 5,
-	intensity = 1,
-	timeout = 8,
-	speed = 10,
-	penetration = 0,
-	ingredient = "default:mese_block"
-})
-
-register_spacecannon({
-	color = "yellow",
-	name = "Plasma cannon",
-	desc = "medium speed, medium damage",
-	is_th = true,
-	range = 3,
-	storage_require_mod = 3,
-	intensity = 2,
-	damage = 8,
-	timeout = 8,
-	speed = 5,
-	penetration = 0,
-	ingredient = "spacecannon:cannon_green"
-})
-
-register_spacecannon({
-	color = "red",
-	name = "Nova cannon",
-	desc = "slow, heavy damage",
-	is_th = true,
-	range = 5,
-	storage_require_mod = 5,
-	intensity = 4,
-	damage = 10,
-	timeout = 15,
-	speed = 3,
-	penetration = 0,
-	ingredient = "spacecannon:cannon_yellow"
-})
+spacecannon.cannon_defs = {
+	{
+		color = "green",
+		name = "Ion cannon",
+		desc = "fast, low damage",
+		is_th = true,
+		range = 1,
+		storage_require_mod = 1,
+		damage = 5,
+		intensity = 1,
+		timeout = 8,
+		speed = 10,
+		penetration = 0,
+		ingredient = "default:mese_block"
+	}, {
+		color = "yellow",
+		name = "Plasma cannon",
+		desc = "medium speed, medium damage",
+		is_th = true,
+		range = 3,
+		storage_require_mod = 3,
+		intensity = 2,
+		damage = 8,
+		timeout = 8,
+		speed = 5,
+		penetration = 0,
+		ingredient = "spacecannon:cannon_green"
+	}, {
+		color = "red",
+		name = "Nova cannon",
+		desc = "slow, heavy damage",
+		is_th = true,
+		range = 5,
+		storage_require_mod = 5,
+		intensity = 4,
+		damage = 10,
+		timeout = 15,
+		speed = 3,
+		penetration = 0,
+		ingredient = "spacecannon:cannon_yellow"
+	},
 
 -- Railguns
 
--- Regular railgun
-register_spacecannon({
-	color = "blue",
-	name = "Railgun cannon",
-	desc = "fast, 2x penetrating damage",
-	textures = {
-		"railgun_blank.png" .. cable_entry,
-		"railgun_front.png",
-		"railgun_blank.png" .. cable_entry,
-		"railgun_blank.png" .. cable_entry,
-		"railgun_top_bottom.png",
-		"railgun_top_bottom.png",
+	-- Regular railgun
+	{
+		color = "blue",
+		name = "Railgun cannon",
+		desc = "fast, 2x penetrating damage",
+		textures = {
+			"railgun_blank.png" .. cable_entry,
+			"railgun_front.png",
+			"railgun_blank.png" .. cable_entry,
+			"railgun_blank.png" .. cable_entry,
+			"railgun_top_bottom.png",
+			"railgun_top_bottom.png",
+		},
+		is_th = false,
+		range = 0,
+		storage_require_mod = 1,
+		intensity = 2,
+		damage = 6,
+		timeout = 10,
+		speed = 9,
+		penetration = 2,
+		ingredient = "technic:copper_coil"
 	},
-	is_th = false,
-	range = 0,
-	storage_require_mod = 1,
-	intensity = 2,
-	damage = 6,
-	timeout = 10,
-	speed = 9,
-	penetration = 2,
-	ingredient = "technic:copper_coil"
-})
 
--- Helical railgun
-register_spacecannon({
-	color = "purple",
-	name = "Helical railgun cannon",
-	desc = "fast, 4x penetrating damage",
-	textures = {
-		"railgun_blank.png" .. cable_entry,
-		"helical_railgun_front.png",
-		"railgun_blank.png" .. cable_entry,
-		"railgun_blank.png" .. cable_entry,
-		"helical_railgun_top_bottom.png",
-		"helical_railgun_top_bottom.png",
+	-- Helical railgun
+	{
+		color = "purple",
+		name = "Helical railgun cannon",
+		desc = "fast, 4x penetrating damage",
+		textures = {
+			"railgun_blank.png" .. cable_entry,
+			"helical_railgun_front.png",
+			"railgun_blank.png" .. cable_entry,
+			"railgun_blank.png" .. cable_entry,
+			"helical_railgun_top_bottom.png",
+			"helical_railgun_top_bottom.png",
+		},
+		is_th = false,
+		range = 0,
+		storage_require_mod = 1.5,
+		intensity = 4,
+		damage = 6,
+		timeout = 15,
+		speed = 10,
+		penetration = 4,
+		ingredient = "spacecannon:cannon_blue"
 	},
-	is_th = false,
-	range = 0,
-	storage_require_mod = 1.5,
-	intensity = 4,
-	damage = 6,
-	timeout = 15,
-	speed = 10,
-	penetration = 4,
-	ingredient = "spacecannon:cannon_blue"
-})
+}
+
+for _, def in ipairs(spacecannon.cannon_defs) do
+	register_spacecannon(def)
+end
+
