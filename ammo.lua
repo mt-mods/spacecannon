@@ -1,6 +1,7 @@
 minetest.register_craftitem("spacecannon:railgun_slug", {
 	description = "Railgun slug",
     inventory_image = "spacecannon_railgun_slug.png",
+    stack_max = 13,
 })
 
 minetest.register_craft({
