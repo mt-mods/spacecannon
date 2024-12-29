@@ -117,7 +117,7 @@ spacecannon.fire = function(pos, playername, color, speed, is_th, storage_requir
 	local node = minetest.get_node(pos)
 	local dir = spacecannon.facedir_to_down_dir(node.param2)
 	local obj = minetest.add_entity({x=pos.x+dir.x, y=pos.y+dir.y, z=pos.z+dir.z}, "spacecannon:energycube_" .. color)
-	obj:setvelocity({x=dir.x*speed, y=dir.y*speed, z=dir.z*speed})
+	obj:set_velocity({ x = dir.x * speed, y = dir.y * speed, z = dir.z * speed })
 end
 
 -- destroy stuff in range
