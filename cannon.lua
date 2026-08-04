@@ -2,7 +2,7 @@
 
 --local has_digilines = core.get_modpath("digilines") and true
 local has_pipeworks = core.get_modpath("pipeworks") and true
-
+local S = core.get_translator(core.get_current_modname())
 local cable_entry = "^technic_cable_connection_overlay.png"
 
 local groups_base = {
@@ -207,17 +207,7 @@ local register_spacecannon = function(def)
 				config_require = spacecannon.config.th_powerrequirement
 			end
 
-			local infotext = "Power: "
-				.. eu_input
-				.. "/"
-				.. demand
-				.. " "
-				.. "Store: "
-				.. store
-				.. "\n"
-				.. def.name
-				.. ": "
-				.. def.desc
+			local infotext = S("Power: @1/@2 Store: @3\n@4: @5", eu_input, demand, store, def.name, def.desc)
 			meta:set_string("infotext", infotext)
 
 			if store < config_store then
@@ -303,8 +293,8 @@ end
 spacecannon.cannon_defs = {
 	{
 		color = "green",
-		name = "Ion cannon",
-		desc = "fast, low damage",
+		name = S("Ion cannon"),
+		desc = S("fast, low damage"),
 		is_th = true,
 		range = 1,
 		storage_require_mod = 1,
@@ -317,8 +307,8 @@ spacecannon.cannon_defs = {
 	},
 	{
 		color = "yellow",
-		name = "Plasma cannon",
-		desc = "medium speed, medium damage",
+		name = S("Plasma cannon"),
+		desc = S("medium speed, medium damage"),
 		is_th = true,
 		range = 3,
 		storage_require_mod = 3,
@@ -331,8 +321,8 @@ spacecannon.cannon_defs = {
 	},
 	{
 		color = "red",
-		name = "Nova cannon",
-		desc = "slow, heavy damage",
+		name = S("Nova cannon"),
+		desc = S("slow, heavy damage"),
 		is_th = true,
 		range = 5,
 		storage_require_mod = 5,
@@ -349,8 +339,8 @@ spacecannon.cannon_defs = {
 	-- Regular railgun
 	{
 		color = "blue",
-		name = "Railgun cannon",
-		desc = "fast, 2x penetrating damage",
+		name = S("Railgun cannon"),
+		desc = S("fast, 2x penetrating damage"),
 		textures = {
 			"railgun_blank.png" .. cable_entry,
 			"railgun_front.png",
@@ -373,8 +363,8 @@ spacecannon.cannon_defs = {
 	-- Helical railgun
 	{
 		color = "purple",
-		name = "Helical railgun cannon",
-		desc = "fast, 4x penetrating damage",
+		name = S("Helical railgun cannon"),
+		desc = S("fast, 4x penetrating damage"),
 		textures = {
 			"railgun_blank.png" .. cable_entry,
 			"helical_railgun_front.png",

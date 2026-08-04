@@ -1,5 +1,7 @@
+local S = core.get_translator(core.get_current_modname())
+
 core.register_craftitem("spacecannon:railgun_slug", {
-	description = "Railgun slug",
+	description = S("Railgun slug"),
 	inventory_image = "spacecannon_railgun_slug.png",
 	stack_max = 13,
 })

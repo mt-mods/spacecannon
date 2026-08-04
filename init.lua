@@ -18,5 +18,3 @@ dofile(MP .. "/digiline.lua")
 dofile(MP .. "/cannon.lua")
 dofile(MP .. "/ammo.lua")
 dofile(MP .. "/node_resilience.lua")
-
-print("[OK] Spacecannon")

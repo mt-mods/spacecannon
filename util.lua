@@ -1,6 +1,7 @@
 -- vi: noexpandtab
 
 local has_digilines = core.get_modpath("digilines")
+local S = core.get_translator(core.get_current_modname())
 
 spacecannon.update_formspec = function(meta, is_th)
 	local formspec = ""
@@ -14,7 +15,9 @@ spacecannon.update_formspec = function(meta, is_th)
 			.. "list[current_player;main;0.375,4;8,4;]"
 			.. "listring[]"
 			.. "item_image[0.375,0.5;1,1;spacecannon:railgun_slug]"
-			.. "label[1.75,1;Ammunition]"
+			.. "label[1.75,1;"
+			.. core.formspec_escape(S("Ammunition"))
+			.. "]"
 
 		-- Manual "fire" button
 		formspec = formspec .. "button_exit[5.125,0.5;5,1;fire;Fire]"
@@ -23,10 +26,14 @@ spacecannon.update_formspec = function(meta, is_th)
 		if has_digilines then
 			local channel = meta:get_string("channel") or ""
 			formspec = formspec
-				.. "field[0.375,2.375;4,1;digiline_channel;Digiline Channel;"
+				.. "field[0.375,2.375;4,1;digiline_channel;"
+				.. core.formspec_escape(S("Digiline Channel"))
+				.. ";"
 				.. channel
 				.. "]"
-				.. "button_exit[4.5,2.375;1,1;set_digiline_channel;Set]"
+				.. "button_exit[4.5,2.375;1,1;set_digiline_channel;"
+				.. core.formspec_escape(S("Set"))
+				.. "]"
 		end
 	else
 		formspec = formspec .. "formspec_version[4]"
@@ -38,16 +45,20 @@ spacecannon.update_formspec = function(meta, is_th)
 		end
 
 		-- Manual "fire" button
-		formspec = formspec .. "button_exit[0.5,0.5;5,1;fire;Fire]"
+		formspec = formspec .. "button_exit[0.5,0.5;5,1;fire;" .. core.formspec_escape(S("Fire")) .. "]"
 
 		-- Digiline channel
 		if has_digilines then
 			local channel = meta:get_string("channel") or ""
 			formspec = formspec
-				.. "field[0.5,2.5;3.5,1;digiline_channel;Digiline Channel;"
+				.. "field[0.5,2.5;3.5,1;digiline_channel;"
+				.. core.formspec_escape(S("Digiline Channel"))
+				.. ";"
 				.. channel
 				.. "]"
-				.. "button_exit[4.5,2.5;1,1;set_digiline_channel;Set]"
+				.. "button_exit[4.5,2.5;1,1;set_digiline_channel;"
+				.. core.formspec_escape(S("Set"))
+				.. "]"
 		end
 	end
 
@@ -90,12 +101,12 @@ spacecannon.fire = function(pos, playername, color, speed, is_th, storage_requir
 	if not is_th then
 		local inv = meta:get_inventory()
 		if inv:is_empty("src") then
-			--core.chat_send_player(playername, "No ammunition loaded!")
+			--core.chat_send_player(playername, S("No ammunition loaded!"))
 			return false
 		end
 		local src_stack = inv:get_list("src")[1]
 		if not src_stack or src_stack:get_name() ~= "spacecannon:railgun_slug" then
-			--core.chat_send_player(playername, "Incorrect ammunition!")
+			--core.chat_send_player(playername, S("Incorrect ammunition!"))
 			return
 		end
 	end
