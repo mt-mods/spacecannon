@@ -1,0 +1,116 @@
+# Space Cannon
+
+[![ContentDB](https://content.luanti.org/packages/mt-mods/spacecannon/shields/downloads/)](https://content.luanti.org/packages/mt-mods/spacecannon/)
+[![luacheck](https://github.com/mt-mods/spacecannon/actions/workflows/luacheck.yml/badge.svg)](https://github.com/mt-mods/spacecannon/actions/workflows/luacheck.yml)
+
+Adds five scifi/space cannons with various projectile-speeds and explosion-strengths.
+The cannons need HV-Power from a `technic` network and can be controlled via formspec/hand, mesecons or digilines.
+They also need to charge first, which can take a couple of seconds depending on cannon-type.
+
+The projectile detonates on impact but only in _non-protected_ areas!
+
+## Screenshots
+
+![Screenshot 1](/screenshot_1.png)
+![Screenshot 2](/screenshot_2.png)
+![Screenshot 3](/screenshot_3.png)
+
+## Dependencies
+
+- Luanti/Minetest v0.4.16
+- [`technic`](https://github.com/minetest-mods/technic)
+
+Supports:
+
+- [`mesecons`](https://github.com/minetest-mods/mesecons)
+- [`digilines`](https://github.com/minetest-mods/digilines)
+
+## Mesecons
+
+An "on" signal triggers a fire-action.
+
+## Digilines
+
+Fire a cannon:
+
+```lua
+if event.type == "program" then
+ digiline_send("cannon", { command = "fire", verbose = false })
+end
+```
+
+Example response from a "get" request:
+
+```lua
+{
+    type = "digiline",
+    channel = "c7",
+    msg = {
+        HV_EU_input = 0,
+        HV_EU_demand = 0,
+        dir = {
+            y = 0,
+            x = 0,
+            z = 1
+        },
+        powerstorage = 10000,
+        ready = true,
+        origin = "c7",
+        name = "spacecannon:cannon_green",
+        pos = {
+            y = 10,
+            x = -64,
+            z = -53
+        }
+    }
+}
+```
+
+The "fire" request can specify an optional "verbose" flag. If this flag
+evaluates to true, then the following example response will be sent back.
+Note that if you have a large number of cannons, you will likely want
+to disable responses. N cannons firing and generating responses will
+cause N^2 messages to be processed, as each cannon receives the fire response
+from all of its peers. If N > 20, your LUAC will overheat. N > 900, and your
+server admin will want to have a chat with you.
+
+```lua
+{
+    type = "digiline",
+    channel = "c2",
+    msg = {
+        pos = {
+            y = 10,
+            x = -59,
+            z = -53
+        },
+        origin = "c2",
+        success = true
+    }
+}
+```
+
+## Api
+
+Modify the ability to shoot depending on position or playername:
+
+```lua
+spacecannon.can_shoot = function(pos, playername)
+    return true
+end
+```
+
+## Contributors
+
+- @BuckarooBanzay
+- @dennisjenkins75
+- @kiedtl
+
+## License
+
+Code: [MIT](/LICENSE#Code)
+Media: [CC-BY-SA 3.0](/LICENSE#Media)
+
+## Attributions
+
+- [sounds/spacecannon_shoot.ogg](https://freesound.org/people/jonccox/sounds/175261/)

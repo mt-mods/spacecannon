@@ -10,8 +10,8 @@ read_globals = {
 	-- mod deps
 	"default", "digilines", "pipeworks", "technic",
 
-	-- Minetest
-	"minetest",
+	-- Luanti
+	"minetest", "core",
 	"vector", "ItemStack",
 	"dump"
 
