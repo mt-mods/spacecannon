@@ -1,7 +1,7 @@
 -- vi: noexpandtab
 
---local has_digilines = minetest.get_modpath("digilines") and true
-local has_pipeworks = minetest.get_modpath("pipeworks") and true
+--local has_digilines = core.get_modpath("digilines") and true
+local has_pipeworks = core.get_modpath("pipeworks") and true
 
 local cable_entry = "^technic_cable_connection_overlay.png"
 
@@ -9,7 +9,7 @@ local groups_base = {
 	cracky = 3,
 	oddly_breakable_by_hand = 3,
 	technic_machine = 1,
-	technic_hv = 1
+	technic_hv = 1,
 }
 
 local groups_rail = table.copy(groups_base)
@@ -19,22 +19,21 @@ if has_pipeworks then
 end
 
 local register_spacecannon = function(def)
-
 	local entity_texture = "energycube_" .. def.color .. ".png"
 
-	minetest.register_entity("spacecannon:energycube_" .. def.color, {
+	core.register_entity("spacecannon:energycube_" .. def.color, {
 		initial_properties = {
 			visual = "cube",
-			visual_size = {x=0.25, y=0.25},
+			visual_size = { x = 0.25, y = 0.25 },
 			textures = {
 				entity_texture,
 				entity_texture,
 				entity_texture,
 				entity_texture,
 				entity_texture,
-				entity_texture
+				entity_texture,
 			},
-			collisionbox = {-0.25,-0.25,-0.25, 0.25,0.25,0.25},
+			collisionbox = { -0.25, -0.25, -0.25, 0.25, 0.25, 0.25 },
 			physical = false,
 			static_save = false,
 		},
@@ -55,44 +54,49 @@ local register_spacecannon = function(def)
 
 			if self.timer > 0.5 then
 				-- add sparks along the way
-				minetest.add_particlespawner({
-						amount = 5,
-						time = 0.5,
-						minpos = pos,
-						maxpos = pos,
-						minvel = {x = -2, y = -2, z = -2},
-						maxvel = {x = 2, y = 2, z = 2},
-						minacc = {x = -3, y = -3, z = -3},
-						maxacc = {x = 3, y = 3, z = 3},
-						minexptime = 1,
-						maxexptime = 2.5,
-						minsize = 0.5,
-						maxsize = 0.75,
-						texture = "spacecannon_spark.png",
-						glow = 5
+				core.add_particlespawner({
+					amount = 5,
+					time = 0.5,
+					minpos = pos,
+					maxpos = pos,
+					minvel = { x = -2, y = -2, z = -2 },
+					maxvel = { x = 2, y = 2, z = 2 },
+					minacc = { x = -3, y = -3, z = -3 },
+					maxacc = { x = 3, y = 3, z = 3 },
+					minexptime = 1,
+					maxexptime = 2.5,
+					minsize = 0.5,
+					maxsize = 0.75,
+					texture = "spacecannon_spark.png",
+					glow = 5,
 				})
 				self.timer = 0
 			end
 
-			local node = minetest.get_node(pos)
-			local node_def = minetest.registered_nodes[node.name]
+			local node = core.get_node(pos)
+			local node_def = core.registered_nodes[node.name]
 
 			local goes_through = not node_def.walkable
 
 			if goes_through then
-				local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
+				local objs = core.get_objects_inside_radius({ x = pos.x, y = pos.y, z = pos.z }, 1)
 				local collided = false
 				for _, obj in pairs(objs) do
-					if (obj:is_player() or (obj:get_luaentity() ~= nil
-						and obj:get_luaentity().name ~= self.name
-						and obj:get_luaentity().name ~= "__builtin:item"))
-						and spacecannon.can_damage(obj)
+					if
+						(
+							obj:is_player()
+							or (
+								obj:get_luaentity() ~= nil
+								and obj:get_luaentity().name ~= self.name
+								and obj:get_luaentity().name ~= "__builtin:item"
+							)
+						) and spacecannon.can_damage(obj)
 					then
 						collided = true
 						obj:punch(self.object, 1.0, {
-								full_punch_interval=1.0,
-								damage_groups={fleshy=def.damage},
-							}, nil)
+							full_punch_interval = 1.0,
+							damage_groups = { fleshy = def.damage },
+						}, nil)
 					end
 				end
 
@@ -103,7 +107,6 @@ local register_spacecannon = function(def)
 						self.object:remove()
 					end
 				end
-
 			else
 				-- collision
 				spacecannon.destroy(pos, def.range, def.intensity)
@@ -112,7 +115,7 @@ local register_spacecannon = function(def)
 					self.object:remove()
 				end
 			end
-		end
+		end,
 	})
 
 	-- top, bottom
@@ -122,7 +125,7 @@ local register_spacecannon = function(def)
 		"cannon_blank.png" .. cable_entry,
 		"cannon_blank.png" .. cable_entry,
 		"cannon_blank.png" .. cable_entry,
-		"cannon_blank.png" .. cable_entry
+		"cannon_blank.png" .. cable_entry,
 	}
 	if def.textures then
 		textures = def.textures
@@ -138,30 +141,32 @@ local register_spacecannon = function(def)
 		paramtype2 = "facedir",
 		legacy_facedir_simple = true,
 
-		mesecons = {effector = {
-			action_on = function (pos)
-				local meta = minetest.get_meta(pos)
-				local owner = meta:get_string("owner")
-				spacecannon.fire(pos, owner, def.color, def.speed, def.is_th, def.storage_require_mod)
-			end
-		}},
+		mesecons = {
+			effector = {
+				action_on = function(pos)
+					local meta = core.get_meta(pos)
+					local owner = meta:get_string("owner")
+					spacecannon.fire(pos, owner, def.color, def.speed, def.is_th, def.storage_require_mod)
+				end,
+			},
+		},
 
-		connects_to = {"group:technic_hv_cable"},
-		connect_sides = {"bottom", "top", "left", "right", "front", "back"},
+		connects_to = { "group:technic_hv_cable" },
+		connect_sides = { "bottom", "top", "left", "right", "front", "back" },
 
 		digiline = {
 			receptor = {
 				rules = spacecannon.digiline_rules,
-				action = function() end
+				action = function() end,
 			},
 			effector = {
 				rules = spacecannon.digiline_rules,
-				action = spacecannon.digiline_effector
+				action = spacecannon.digiline_effector,
 			},
 		},
 
 		after_place_node = function(pos, placer)
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			meta:set_string("owner", placer:get_player_name() or "")
 			if has_pipeworks then
 				pipeworks.after_place(pos)
@@ -169,7 +174,7 @@ local register_spacecannon = function(def)
 		end,
 
 		on_construct = function(pos)
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			meta:set_int("powerstorage", 0)
 
 			meta:set_int("HV_EU_input", 0)
@@ -188,20 +193,31 @@ local register_spacecannon = function(def)
 		end,
 
 		technic_run = function(pos)
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			local eu_input = meta:get_int("HV_EU_input")
 			local demand = meta:get_int("HV_EU_demand")
 			local store = meta:get_int("powerstorage")
 
 			local config_store = spacecannon.config.ki_powerstorage * def.storage_require_mod
-			if def.is_th then config_store = spacecannon.config.th_powerstorage * def.storage_require_mod end
+			if def.is_th then
+				config_store = spacecannon.config.th_powerstorage * def.storage_require_mod
+			end
 			local config_require = spacecannon.config.ki_powerrequirement
-			if def.is_th then config_require = spacecannon.config.th_powerrequirement end
+			if def.is_th then
+				config_require = spacecannon.config.th_powerrequirement
+			end
 
-			local infotext =
-				"Power: " .. eu_input .. "/" .. demand .. " " ..
-				"Store: " .. store .. "\n" ..
-				def.name .. ": " .. def.desc
+			local infotext = "Power: "
+				.. eu_input
+				.. "/"
+				.. demand
+				.. " "
+				.. "Store: "
+				.. store
+				.. "\n"
+				.. def.name
+				.. ": "
+				.. def.desc
 			meta:set_string("infotext", infotext)
 
 			if store < config_store then
@@ -216,12 +232,12 @@ local register_spacecannon = function(def)
 
 		on_receive_fields = function(pos, _, fields, sender)
 			local playername = sender and sender:get_player_name() or ""
-			if minetest.is_protected(pos, playername) then
+			if core.is_protected(pos, playername) then
 				-- only allow protection-owner to fire and configure
 				return
 			end
 
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 
 			if fields.fire then
 				spacecannon.fire(pos, playername, def.color, def.speed, def.is_th, def.storage_require_mod)
@@ -236,23 +252,23 @@ local register_spacecannon = function(def)
 
 		after_dig_node = function(pos, _node, meta, _digger)
 			if meta.inventory and meta.inventory.src and meta.inventory.src[1] then
-				minetest.add_item(pos, ItemStack(meta.inventory.src[1]))
+				core.add_item(pos, ItemStack(meta.inventory.src[1]))
 			end
 			if has_pipeworks then
 				pipeworks.after_dig(pos)
 			end
-		end
+		end,
 	}
 
 	if has_pipeworks and not def.is_th then
 		def_cannon.tube = {
 			insert_object = function(pos, _, stack)
-				local meta = minetest.get_meta(pos)
+				local meta = core.get_meta(pos)
 				local inv = meta:get_inventory()
 				return inv:add_item("src", stack)
 			end,
 			can_insert = function(pos, _, stack)
-				local meta = minetest.get_meta(pos)
+				local meta = core.get_meta(pos)
 				local inv = meta:get_inventory()
 				stack = stack:peek_item(1)
 
@@ -260,25 +276,28 @@ local register_spacecannon = function(def)
 			end,
 			input_inventory = "src",
 			connect_sides = {
-				left = 1, back = 1, top = 1,
-				right = 1, front = 1, bottom = nil
-			}
+				left = 1,
+				back = 1,
+				top = 1,
+				right = 1,
+				front = 1,
+				bottom = nil,
+			},
 		}
 	end
 
-	minetest.register_node("spacecannon:cannon_" .. def.color, def_cannon)
+	core.register_node("spacecannon:cannon_" .. def.color, def_cannon)
 
 	technic.register_machine("HV", "spacecannon:cannon_" .. def.color, technic.receiver)
 
-	minetest.register_craft({
-		output = 'spacecannon:cannon_' .. def.color,
+	core.register_craft({
+		output = "spacecannon:cannon_" .. def.color,
 		recipe = {
-			{'', 'default:steelblock', ''},
-			{ def.ingredient, def.ingredient, def.ingredient},
-			{'', 'default:steelblock', ''}
-		}
+			{ "", "default:steelblock", "" },
+			{ def.ingredient, def.ingredient, def.ingredient },
+			{ "", "default:steelblock", "" },
+		},
 	})
-
 end
 
 spacecannon.cannon_defs = {
@@ -294,8 +313,9 @@ spacecannon.cannon_defs = {
 		timeout = 8,
 		speed = 10,
 		penetration = 0,
-		ingredient = "default:mese_block"
-	}, {
+		ingredient = "default:mese_block",
+	},
+	{
 		color = "yellow",
 		name = "Plasma cannon",
 		desc = "medium speed, medium damage",
@@ -307,8 +327,9 @@ spacecannon.cannon_defs = {
 		timeout = 8,
 		speed = 5,
 		penetration = 0,
-		ingredient = "spacecannon:cannon_green"
-	}, {
+		ingredient = "spacecannon:cannon_green",
+	},
+	{
 		color = "red",
 		name = "Nova cannon",
 		desc = "slow, heavy damage",
@@ -320,10 +341,10 @@ spacecannon.cannon_defs = {
 		timeout = 15,
 		speed = 3,
 		penetration = 0,
-		ingredient = "spacecannon:cannon_yellow"
+		ingredient = "spacecannon:cannon_yellow",
 	},
 
--- Railguns
+	-- Railguns
 
 	-- Regular railgun
 	{
@@ -346,7 +367,7 @@ spacecannon.cannon_defs = {
 		timeout = 10,
 		speed = 9,
 		penetration = 2,
-		ingredient = "technic:copper_coil"
+		ingredient = "technic:copper_coil",
 	},
 
 	-- Helical railgun
@@ -370,11 +391,10 @@ spacecannon.cannon_defs = {
 		timeout = 15,
 		speed = 10,
 		penetration = 4,
-		ingredient = "spacecannon:cannon_blue"
+		ingredient = "spacecannon:cannon_blue",
 	},
 }
 
 for _, def in ipairs(spacecannon.cannon_defs) do
 	register_spacecannon(def)
 end
-
