@@ -2,6 +2,7 @@
 
 [![ContentDB](https://content.luanti.org/packages/mt-mods/spacecannon/shields/downloads/)](https://content.luanti.org/packages/mt-mods/spacecannon/)
 [![luacheck](https://github.com/mt-mods/spacecannon/actions/workflows/luacheck.yml/badge.svg)](https://github.com/mt-mods/spacecannon/actions/workflows/luacheck.yml)
+[![Translation status](https://translate.luanti.ch/widget/mt-mods/spacecannon/svg-badge.svg?capitalize=1)](https://translate.luanti.ch/engage/mt-mods/)
 
 Adds five scifi/space cannons with various projectile-speeds and explosion-strengths.
 The cannons need HV-Power from a `technic` network and can be controlled via formspec/hand, mesecons or digilines.
