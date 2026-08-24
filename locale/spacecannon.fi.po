@@ -8,77 +8,81 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-04 11:18-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-08-24 16:42+0000\n"
+"Last-Translator: Jouni Järvinen <rautajunk@gmail.com>\n"
+"Language-Team: Finnish <https://translate.luanti.ch/projects/mt-mods/"
+"spacecannon/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2026.8.1\n"
 
 #: ammo.lua:4
 msgid "Railgun slug"
-msgstr ""
+msgstr "Kiskotykin luoti"
 
 #: cannon.lua:210
 msgid ""
 "Power: @1/@2 Store: @3\n"
 "@4: @5"
 msgstr ""
+"Voima: @1/@2 Varasto: @3\n"
+"@4: @5"
 
 #: cannon.lua:296
 msgid "Ion cannon"
-msgstr ""
+msgstr "Ionitykki"
 
 #: cannon.lua:297
 msgid "fast, low damage"
-msgstr ""
+msgstr "nopea, alhainen vahinko"
 
 #: cannon.lua:310
 msgid "Plasma cannon"
-msgstr ""
+msgstr "Plasmatykki"
 
 #: cannon.lua:311
 msgid "medium speed, medium damage"
-msgstr ""
+msgstr "keskinopeus, keskivahinko"
 
 #: cannon.lua:324
 msgid "Nova cannon"
-msgstr ""
+msgstr "Novatykki"
 
 #: cannon.lua:325
 msgid "slow, heavy damage"
-msgstr ""
+msgstr "hidas, korkea vahinko"
 
 #: cannon.lua:342
 msgid "Railgun cannon"
-msgstr ""
+msgstr "Kiskotykki"
 
 #: cannon.lua:343
 msgid "fast, 2x penetrating damage"
-msgstr ""
+msgstr "nopea, 2x lävistysvahinko"
 
 #: cannon.lua:366
 msgid "Helical railgun cannon"
-msgstr ""
+msgstr "Spiraalimainen kiskotykki"
 
 #: cannon.lua:367
 msgid "fast, 4x penetrating damage"
-msgstr ""
+msgstr "nopea, 4x lävistysvahinko"
 
 #: util.lua:19
 msgid "Ammunition"
-msgstr ""
+msgstr "Ammukset"
 
 #: util.lua:30 util.lua:55
 msgid "Digiline Channel"
-msgstr ""
+msgstr "Digiline-kanava"
 
 #: util.lua:35 util.lua:60
 msgid "Set"
-msgstr ""
+msgstr "Aseta"
 
 #: util.lua:48
 msgid "Fire"
-msgstr ""
+msgstr "Ammu"
